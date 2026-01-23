@@ -59,6 +59,8 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
 API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
 df_final = get_qwi_piece_by_piece(API_KEY)
 
+OUTPUT_DIR = "/m/Temp_agencies"
+
 if df_final is not None:
     plt.figure(figsize=(10, 5))
     plt.plot(df_final['period'], df_final['Emp'], marker='o', color='darkblue', linewidth=2)
@@ -67,4 +69,8 @@ if df_final is not None:
     plt.ylabel('Total Employees')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"{OUTPUT_DIR}/temp_agencies_over_time.png", dpi=300, bbox_inches='tight')
+    print(f"Saved plot to {OUTPUT_DIR}/temp_agencies_over_time.png")
+    df_final.to_csv(f"{OUTPUT_DIR}/temp_agencies_over_time.csv", index=False)
+    print(f"Saved data to {OUTPUT_DIR}/temp_agencies_over_time.csv")
+    plt.close()
