@@ -38,12 +38,14 @@ def get_demographic_snapshot(api_key, state="06", year="2023", quarter="1"):
 MY_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
 df_sex, df_age = get_demographic_snapshot(MY_KEY)
 
+OUTPUT_DIR = "/m/Temp_agencies"
+
 if df_sex is not None and df_age is not None:
     # Mapping Labels
     sex_map = {"1": "Male", "2": "Female"}
-    age_map = {"A01": "14-18", "A02": "19-21", "A03": "22-24", "A04": "25-34", 
+    age_map = {"A01": "14-18", "A02": "19-21", "A03": "22-24", "A04": "25-34",
                "A05": "35-44", "A06": "45-54", "A07": "55-64", "A08": "65-99"}
-    
+
     df_sex['label'] = df_sex['sex'].map(sex_map)
     df_age['label'] = df_age['agegrp'].map(age_map)
     df_sex['Emp'] = pd.to_numeric(df_sex['Emp'])
@@ -63,4 +65,11 @@ if df_sex is not None and df_age is not None:
     plt.xticks(rotation=45)
 
     plt.tight_layout()
-    plt.show()
+    plt.savefig(f"{OUTPUT_DIR}/temp_agencies_race_sex.png", dpi=300, bbox_inches='tight')
+    print(f"Saved plot to {OUTPUT_DIR}/temp_agencies_race_sex.png")
+    df_sex.to_csv(f"{OUTPUT_DIR}/temp_agencies_sex.csv", index=False)
+    df_age.to_csv(f"{OUTPUT_DIR}/temp_agencies_age.csv", index=False)
+    print(f"Saved data to {OUTPUT_DIR}/")
+    plt.close()
+else:
+    print("Failed to retrieve data")

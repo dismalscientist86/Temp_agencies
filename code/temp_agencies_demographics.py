@@ -198,7 +198,7 @@ class TempAgencyDemographicsCorrected:
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
         
-        filename = f'temp_employment_by_{demographic_var}_{year}_Q{quarter}.png'
+        filename = f'/m/Temp_agencies/temp_employment_by_{demographic_var}_{year}_Q{quarter}.png'
         plt.savefig(filename, dpi=300, bbox_inches='tight')
         print(f"✓ Saved plot: {filename}")
         plt.close()
@@ -235,7 +235,7 @@ def main():
         df = analyzer.get_demographic_breakdown(demo_var, YEAR, QUARTER)
         
         if df is not None:
-            csv_filename = f'temp_employment_by_{demo_var}_{YEAR}_Q{QUARTER}.csv'
+            csv_filename = f'/m/Temp_agencies/temp_employment_by_{demo_var}_{YEAR}_Q{QUARTER}.csv'
             df.to_csv(csv_filename, index=False)
             print(f"✓ Saved: {csv_filename}")
             

@@ -67,6 +67,8 @@ df_merged = df_merged.merge(dfs["561320"][["period", "Emp"]].rename(columns={"Em
 df_merged = df_merged.merge(dfs["561312"][["period", "Emp"]].rename(columns={"Emp": "561312"}), on="period")
 df_merged = df_merged.merge(dfs["561330"][["period", "Emp"]].rename(columns={"Emp": "561330"}), on="period")
 
+OUTPUT_DIR = "/m/Temp_agencies"
+
 # Plot with cleaned-up x-axis
 plt.figure(figsize=(12, 6))
 plt.plot(df_merged['period'], df_merged['561311'], marker='o', label='Employment Services (561311)')
@@ -86,5 +88,9 @@ xticks_labels = [df_merged['period'].iloc[i] for i in xticks_positions]
 plt.xticks(ticks=xticks_positions, labels=xticks_labels, rotation=45)
 
 plt.tight_layout()
-plt.show()
+plt.savefig(f"{OUTPUT_DIR}/employment_services_over_time.png", dpi=300, bbox_inches='tight')
+print(f"Saved plot to {OUTPUT_DIR}/employment_services_over_time.png")
+df_merged.to_csv(f"{OUTPUT_DIR}/employment_services_over_time.csv", index=False)
+print(f"Saved data to {OUTPUT_DIR}/employment_services_over_time.csv")
+plt.close()
 
