@@ -1,8 +1,9 @@
 import requests
 import pandas as pd
 import matplotlib.pyplot as plt
+import time
 
-def get_demographic_snapshot(api_key, state="06", year="2023", quarter="1"):
+def get_demographic_snapshot(api_key, state="06", year="2022", quarter="1"):
     url = "https://api.census.gov/data/timeseries/qwi/sa"
     base_params = {
         "for": f"state:{state}",
@@ -10,35 +11,53 @@ def get_demographic_snapshot(api_key, state="06", year="2023", quarter="1"):
         "ownercode": "A05",
         "year": year,
         "quarter": quarter,
+        "education": "E0",
+        "firmage": "0",
+        "firmsize": "0",
         "key": api_key
     }
 
-    # 1. Fetch Sex Distribution (Keep Age at Total A00)
-    sex_params = base_params.copy()
-    sex_params.update({"get": "Emp,sex", "agegrp": "A00", "sex": "1,2"})
-    
-    # 2. Fetch Age Distribution (Keep Sex at Total 0)
-    age_params = base_params.copy()
-    age_params.update({"get": "Emp,agegrp", "sex": "0", "agegrp": "A01,A02,A03,A04,A05,A06,A07,A08"})
-
-    # Helper to execute and clean
-    def fetch_and_clean(p):
-        r = requests.get(url, params=p)
+    # Helper to fetch individual category
+    def fetch_single(params):
+        r = requests.get(url, params=params, timeout=10)
         if r.status_code == 200:
             d = r.json()
-            return pd.DataFrame(d[1:], columns=d[0])
+            if len(d) > 1:
+                return d[1]
         return None
 
-    df_sex = fetch_and_clean(sex_params)
-    df_age = fetch_and_clean(age_params)
+    # 1. Fetch Sex Distribution - individual calls
+    sex_data = []
+    for sex_val in ['1', '2']:
+        params = base_params.copy()
+        params.update({"get": "Emp", "agegrp": "A00", "sex": sex_val})
+        result = fetch_single(params)
+        if result:
+            sex_data.append({'Emp': result[0], 'sex': sex_val})
+        time.sleep(0.1)
+
+    # 2. Fetch Age Distribution - individual calls
+    age_codes = ['A01', 'A02', 'A03', 'A04', 'A05', 'A06', 'A07', 'A08']
+    age_data = []
+    for age_val in age_codes:
+        params = base_params.copy()
+        params.update({"get": "Emp", "sex": "0", "agegrp": age_val})
+        result = fetch_single(params)
+        if result:
+            age_data.append({'Emp': result[0], 'agegrp': age_val})
+        time.sleep(0.1)
+
+    df_sex = pd.DataFrame(sex_data) if sex_data else None
+    df_age = pd.DataFrame(age_data) if age_data else None
 
     return df_sex, df_age
 
 # --- Run and Plot ---
 MY_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+print("Fetching demographic data from Census QWI API...")
 df_sex, df_age = get_demographic_snapshot(MY_KEY)
 
-OUTPUT_DIR = "/m/Temp_agencies"
+OUTPUT_DIR = "M:/Temp_agencies"
 
 if df_sex is not None and df_age is not None:
     # Mapping Labels
@@ -50,6 +69,9 @@ if df_sex is not None and df_age is not None:
     df_age['label'] = df_age['agegrp'].map(age_map)
     df_sex['Emp'] = pd.to_numeric(df_sex['Emp'])
     df_age['Emp'] = pd.to_numeric(df_age['Emp'])
+
+    print(f"Sex data: {len(df_sex)} records")
+    print(f"Age data: {len(df_age)} records")
 
     # Visualization
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))

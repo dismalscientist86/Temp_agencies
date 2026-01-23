@@ -67,7 +67,7 @@ df_merged = df_merged.merge(dfs["561320"][["period", "Emp"]].rename(columns={"Em
 df_merged = df_merged.merge(dfs["561312"][["period", "Emp"]].rename(columns={"Emp": "561312"}), on="period")
 df_merged = df_merged.merge(dfs["561330"][["period", "Emp"]].rename(columns={"Emp": "561330"}), on="period")
 
-OUTPUT_DIR = "/m/Temp_agencies"
+OUTPUT_DIR = "M:/Temp_agencies"
 
 # Plot with cleaned-up x-axis
 plt.figure(figsize=(12, 6))

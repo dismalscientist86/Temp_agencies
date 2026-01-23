@@ -56,7 +56,7 @@ class QWITempAgencyAnalyzer:
             
             if response.status_code == 200:
                 data = response.json()
-                print(f"✓ API connection successful!")
+                print(f"[OK] API connection successful!")
                 print(f"Sample data received: {data}")
             elif response.status_code == 400:
                 print(f"✗ Bad Request (400)")
@@ -67,7 +67,7 @@ class QWITempAgencyAnalyzer:
                 print("  3. Requested data doesn't exist")
                 sys.exit(1)
             elif response.status_code == 204:
-                print(f"✓ API connected but no data for test query")
+                print(f"[OK] API connected but no data for test query")
             else:
                 print(f"✗ Unexpected status: {response.status_code}")
                 print(f"Response: {response.text[:500]}")
@@ -413,9 +413,9 @@ def main():
     
     if national_timeline is not None and len(national_timeline) > 0:
         # Save timeline data
-        output_file = '/m/Temp_agencies/national_temp_employment.csv'
+        output_file = 'M:/Temp_agencies/national_temp_employment.csv'
         national_timeline.to_csv(output_file, index=False)
-        print(f"\n✓ Saved timeline to {output_file}")
+        print(f"\n[OK] Saved timeline to {output_file}")
         print(f"\nTimeline summary:")
         print(national_timeline.describe())
         
@@ -437,9 +437,9 @@ def main():
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         
-        plot_file = '/m/Temp_agencies/national_timeline.png'
+        plot_file = 'M:/Temp_agencies/national_timeline.png'
         plt.savefig(plot_file, dpi=300, bbox_inches='tight')
-        print(f"✓ Saved plot to {plot_file}")
+        print(f"[OK] Saved plot to {plot_file}")
         plt.close()
     else:
         print("\n✗ Could not retrieve timeline data - skipping demographic analysis")
@@ -455,7 +455,7 @@ def main():
         "national_timeline.png"
     ]
     for f in files_created:
-        print(f"  ✓ {f}")
+        print(f"  [OK] {f}")
 
 
 if __name__ == "__main__":

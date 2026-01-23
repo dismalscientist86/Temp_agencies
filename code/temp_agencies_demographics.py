@@ -154,7 +154,7 @@ class TempAgencyDemographicsCorrected:
         print()
         
         if not all_data or sum(d['employment'] for d in all_data) == 0:
-            print(f"  ⚠ No data available for {demographic_var}")
+            print(f"  [WARN] No data available for {demographic_var}")
             return None
         
         df = pd.DataFrame(all_data)
@@ -198,9 +198,9 @@ class TempAgencyDemographicsCorrected:
         plt.xticks(rotation=45, ha='right')
         plt.tight_layout()
         
-        filename = f'/m/Temp_agencies/temp_employment_by_{demographic_var}_{year}_Q{quarter}.png'
+        filename = f'M:/Temp_agencies/temp_employment_by_{demographic_var}_{year}_Q{quarter}.png'
         plt.savefig(filename, dpi=300, bbox_inches='tight')
-        print(f"✓ Saved plot: {filename}")
+        print(f"[OK] Saved plot: {filename}")
         plt.close()
 
 
@@ -235,15 +235,15 @@ def main():
         df = analyzer.get_demographic_breakdown(demo_var, YEAR, QUARTER)
         
         if df is not None:
-            csv_filename = f'/m/Temp_agencies/temp_employment_by_{demo_var}_{YEAR}_Q{QUARTER}.csv'
+            csv_filename = f'M:/Temp_agencies/temp_employment_by_{demo_var}_{YEAR}_Q{QUARTER}.csv'
             df.to_csv(csv_filename, index=False)
-            print(f"✓ Saved: {csv_filename}")
+            print(f"[OK] Saved: {csv_filename}")
             
             analyzer.create_visualization(df, demo_var, YEAR, QUARTER)
             
             results[demo_var] = df
         else:
-            print(f"✗ No data for {demo_var}")
+            print(f"[FAILED] No data for {demo_var}")
         
         print()
     
@@ -252,7 +252,7 @@ def main():
     print("="*70)
     
     if results:
-        print("\n✓ Successfully generated files:")
+        print("\n[OK] Successfully generated files:")
         for demo_var in results.keys():
             print(f"\n{demo_var.upper()}:")
             print(f"  - temp_employment_by_{demo_var}_{YEAR}_Q{QUARTER}.csv")
@@ -266,7 +266,7 @@ def main():
             print(f"\n{demo_var.upper()}:")
             print(df.to_string(index=False))
     else:
-        print("\n✗ No data was retrieved")
+        print("\n[FAILED] No data was retrieved")
         print("\nTry running diagnostic_corrected.py first to verify")
         print("which year/quarter has available data")
     

@@ -59,7 +59,7 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
 API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
 df_final = get_qwi_piece_by_piece(API_KEY)
 
-OUTPUT_DIR = "/m/Temp_agencies"
+OUTPUT_DIR = "M:/Temp_agencies"
 
 if df_final is not None:
     plt.figure(figsize=(10, 5))
