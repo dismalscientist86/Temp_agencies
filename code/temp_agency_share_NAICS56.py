@@ -55,19 +55,19 @@ class SectorShareAnalyzer:
             
             if response.status_code == 200:
                 data = response.json()
-                print(f"✓ API connection successful!")
+                print(f"[OK] API connection successful!")
                 print(f"Sample data: {data}")
             elif response.status_code == 204:
-                print(f"✓ API connected (no data for test query)")
+                print(f"[OK] API connected (no data for test query)")
             else:
-                print(f"✗ Status {response.status_code}")
+                print(f"[FAILED] Status {response.status_code}")
                 print(f"Response: {response.text[:500]}")
                 if response.status_code == 400:
                     print("\nTroubleshooting: Check API key and parameters")
                 sys.exit(1)
                 
         except Exception as e:
-            print(f"✗ Error: {e}")
+            print(f"[FAILED] Error: {e}")
             sys.exit(1)
         
         print("="*70 + "\n")
@@ -169,10 +169,10 @@ class SectorShareAnalyzer:
                     # Rate limiting
                     time.sleep(0.08)
         
-        print(f"\n  ✓ Completed: {success_count:,} data points retrieved\n")
+        print(f"\n  [OK] Completed: {success_count:,} data points retrieved\n")
         
         if not all_data:
-            print(f"  ✗ No data retrieved for {naics_label}")
+            print(f"  [FAILED] No data retrieved for {naics_label}")
             return None
         
         # Aggregate to national level
@@ -244,7 +244,7 @@ class SectorShareAnalyzer:
             'Emp_sector': 'sector_employment'
         })
         
-        print(f"\n✓ Successfully calculated shares for {len(merged_df)} quarters")
+        print(f"\n[OK] Successfully calculated shares for {len(merged_df)} quarters")
         print(f"\nSummary statistics:")
         print(merged_df[['temp_employment', 'sector_employment', 'share_pct']].describe())
         
@@ -265,7 +265,7 @@ class SectorShareAnalyzer:
                 marker='s', linewidth=2, markersize=4,
                 label='Total Sector (56)', color='darkgreen', alpha=0.7)
         
-        ax1.set_title('Employment in NAICS 56 Sector: Temp Agencies vs. Total Sector', 
+        ax1.set_title('Employment in NAICS 56 Sector - National: Temp Agencies vs. Total Sector', 
                      fontsize=14, fontweight='bold')
         ax1.set_xlabel('Quarter', fontsize=12)
         ax1.set_ylabel('Employment (Thousands)', fontsize=12)
@@ -284,7 +284,7 @@ class SectorShareAnalyzer:
                 color='darkred')
         ax2.fill_between(x, df['share_pct'], alpha=0.3, color='darkred')
         
-        ax2.set_title('Temp Agency Share of NAICS 56 Sector Employment', 
+        ax2.set_title('Temp Agency Share of NAICS 56 Sector Employment - National', 
                      fontsize=14, fontweight='bold')
         ax2.set_xlabel('Quarter', fontsize=12)
         ax2.set_ylabel('Share (%)', fontsize=12)
@@ -303,7 +303,7 @@ class SectorShareAnalyzer:
         
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
-        print(f"\n✓ Saved plot to {output_file}")
+        print(f"\n[OK] Saved plot to {output_file}")
         plt.close()
     
     def create_summary_statistics(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -348,13 +348,13 @@ def main():
     )
     
     if share_df is None:
-        print("\n✗ Failed to retrieve data")
+        print("\n[FAILED] Failed to retrieve data")
         return
     
     # Save detailed quarterly data
     output_csv = 'M:/Temp_agencies/temp_agency_sector_share.csv'
     share_df.to_csv(output_csv, index=False)
-    print(f"\n✓ Saved detailed data to {output_csv}")
+    print(f"\n[OK] Saved detailed data to {output_csv}")
     
     # Create summary statistics
     print("\n" + "="*70)
@@ -366,7 +366,7 @@ def main():
     
     annual_csv = 'M:/Temp_agencies/temp_agency_sector_share_annual.csv'
     annual_summary.to_csv(annual_csv, index=False)
-    print(f"\n✓ Saved annual summary to {annual_csv}")
+    print(f"\n[OK] Saved annual summary to {annual_csv}")
     
     # Create visualization
     print("\n" + "="*70)
@@ -408,9 +408,9 @@ def main():
     print("ANALYSIS COMPLETE")
     print("="*70)
     print("\nGenerated files:")
-    print("  ✓ temp_agency_sector_share.csv (quarterly data)")
-    print("  ✓ temp_agency_sector_share_annual.csv (annual averages)")
-    print("  ✓ sector_share_plot.png (visualization)")
+    print("  [OK] temp_agency_sector_share.csv (quarterly data)")
+    print("  [OK] temp_agency_sector_share_annual.csv (annual averages)")
+    print("  [OK] sector_share_plot.png (visualization)")
 
 
 if __name__ == "__main__":

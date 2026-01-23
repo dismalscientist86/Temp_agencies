@@ -76,7 +76,7 @@ plt.plot(df_merged['period'], df_merged['561320'], marker='s', label='Temporary 
 plt.plot(df_merged['period'], df_merged['561312'], marker='o', label='Executive Search Services (561312)')
 plt.plot(df_merged['period'], df_merged['561330'], marker='s', label='Professional Employer Organization (561330)')
 
-plt.title('Employment Over Time by NAICS Code (Quarterly)')
+plt.title('Employment Over Time by NAICS Code - California (Quarterly)')
 plt.ylabel('Total Employees')
 plt.xlabel('Period')
 plt.grid(True, alpha=0.3)

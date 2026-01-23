@@ -78,11 +78,11 @@ if df_sex is not None and df_age is not None:
 
     # Sex Chart
     ax1.pie(df_sex['Emp'], labels=df_sex['label'], autopct='%1.1f%%', colors=['#3498db', '#e74c3c'])
-    ax1.set_title('Sex Distribution (NAICS 561320)')
+    ax1.set_title('Sex Distribution - California (NAICS 561320)')
 
     # Age Chart
     ax2.bar(df_age['label'], df_age['Emp'], color='#2ecc71')
-    ax2.set_title('Age Distribution (NAICS 561320)')
+    ax2.set_title('Age Distribution - California (NAICS 561320)')
     ax2.set_ylabel('Number of Employees')
     plt.xticks(rotation=45)
 

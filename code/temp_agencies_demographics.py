@@ -189,7 +189,7 @@ class TempAgencyDemographicsCorrected:
                color=colors.get(demographic_var, 'steelblue'), 
                edgecolor='black', linewidth=0.5)
         
-        ax.set_title(f'Temp Agency Workers by {var_names[demographic_var]} ({year} Q{quarter})', 
+        ax.set_title(f'Temp Agency Workers by {var_names[demographic_var]} - National ({year} Q{quarter})', 
                      fontsize=14, fontweight='bold')
         ax.set_xlabel(var_names[demographic_var], fontsize=12)
         ax.set_ylabel('Percentage of Workforce', fontsize=12)

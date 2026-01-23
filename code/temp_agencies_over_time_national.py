@@ -59,7 +59,7 @@ class QWITempAgencyAnalyzer:
                 print(f"[OK] API connection successful!")
                 print(f"Sample data received: {data}")
             elif response.status_code == 400:
-                print(f"✗ Bad Request (400)")
+                print(f"[FAILED] Bad Request (400)")
                 print(f"Response: {response.text[:500]}")
                 print("\nPossible issues:")
                 print("  1. Invalid parameter combination")
@@ -69,16 +69,16 @@ class QWITempAgencyAnalyzer:
             elif response.status_code == 204:
                 print(f"[OK] API connected but no data for test query")
             else:
-                print(f"✗ Unexpected status: {response.status_code}")
+                print(f"[FAILED] Unexpected status: {response.status_code}")
                 print(f"Response: {response.text[:500]}")
                 sys.exit(1)
                 
         except requests.exceptions.ConnectionError as e:
-            print(f"✗ Connection Error: Cannot reach Census API")
+            print(f"[FAILED] Connection Error: Cannot reach Census API")
             print(f"Error: {e}")
             sys.exit(1)
         except Exception as e:
-            print(f"✗ Error: {e}")
+            print(f"[FAILED] Error: {e}")
             sys.exit(1)
         
         print("="*70 + "\n")
@@ -206,7 +206,7 @@ class QWITempAgencyAnalyzer:
         print(f"{'='*70}\n")
         
         if not all_data:
-            print("⚠ WARNING: No data retrieved!")
+            print("[WARN] WARNING: No data retrieved!")
             print("\nPossible reasons:")
             print("  1. API key may be invalid or expired")
             print("  2. The NAICS code might not have data for this time period")
@@ -380,7 +380,7 @@ class QWITempAgencyAnalyzer:
             print(f"  {labels[demographic_var].get(category_code, category_code)}: {total_emp:,}")
         
         if not all_data or sum(d['employment'] for d in all_data) == 0:
-            print(f"  ⚠ No data available for {demographic_var} breakdown")
+            print(f"  [WARN] No data available for {demographic_var} breakdown")
             return None
             
         df = pd.DataFrame(all_data)
@@ -442,7 +442,7 @@ def main():
         print(f"[OK] Saved plot to {plot_file}")
         plt.close()
     else:
-        print("\n✗ Could not retrieve timeline data - skipping demographic analysis")
+        print("\n[FAILED] Could not retrieve timeline data - skipping demographic analysis")
         return
     
     

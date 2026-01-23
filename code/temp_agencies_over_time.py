@@ -64,7 +64,7 @@ OUTPUT_DIR = "M:/Temp_agencies"
 if df_final is not None:
     plt.figure(figsize=(10, 5))
     plt.plot(df_final['period'], df_final['Emp'], marker='o', color='darkblue', linewidth=2)
-    plt.title('NAICS 561311: Employment Over Time (Quarterly)')
+    plt.title('NAICS 561311: Employment Over Time - California (Quarterly)')
     plt.xticks(rotation=45)
     plt.ylabel('Total Employees')
     plt.grid(True, alpha=0.3)
