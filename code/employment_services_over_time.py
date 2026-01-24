@@ -53,7 +53,7 @@ def get_qwi_data_for_naics(api_key, naics_code, state_code="06", start_year=2005
     return df
 
 # --- Run ---
-API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+API_KEY = ""
 naics_codes = {"561311": "Employment Placement Agencies", "561320": "Temporary Help Services", "561312": "Executive Search Services", "561330" : "Professional Employer Organizations" }
 
 # Pull data for both NAICS codes

@@ -207,7 +207,7 @@ class TempAgencyDemographicsCorrected:
 def main():
     """Main analysis for demographic breakdowns"""
     
-    API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+    API_KEY = ""
     
     # Use the same year range that worked for timeline: 2015-2023
     # Start with most recent and work backwards

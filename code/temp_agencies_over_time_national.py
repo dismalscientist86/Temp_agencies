@@ -393,7 +393,7 @@ def main():
     """Main analysis pipeline"""
     
     # Your API key
-    API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+    API_KEY = ""
     
     print("="*70)
     print("CENSUS QWI TEMP AGENCY ANALYSIS")

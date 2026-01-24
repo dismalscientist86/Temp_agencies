@@ -53,7 +53,7 @@ def get_demographic_snapshot(api_key, state="06", year="2022", quarter="1"):
     return df_sex, df_age
 
 # --- Run and Plot ---
-MY_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+MY_KEY = ""
 print("Fetching demographic data from Census QWI API...")
 df_sex, df_age = get_demographic_snapshot(MY_KEY)
 

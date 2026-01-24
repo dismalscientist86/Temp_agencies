@@ -56,7 +56,7 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
     return df
 
 # --- Run ---
-API_KEY = "3192f7e1f6c2306861d2b03c9a6ae895ff43c788"
+API_KEY = ""
 df_final = get_qwi_piece_by_piece(API_KEY)
 
 OUTPUT_DIR = "M:/Temp_agencies"
