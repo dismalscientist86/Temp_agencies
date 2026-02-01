@@ -5,6 +5,7 @@ import seaborn as sns
 import time
 from typing import Optional
 import sys
+import os
 
 # Set style for better-looking plots
 sns.set_style("whitegrid")
@@ -326,8 +327,8 @@ class SectorShareAnalyzer:
 def main():
     """Main analysis pipeline"""
     
-    # Your API key
-    API_KEY = ""
+    # API key from environment variable (set in .env or shell)
+    API_KEY = os.environ.get("CENSUS_API_KEY", "")
     
     print("="*70)
     print("TEMP AGENCY SECTOR SHARE ANALYSIS")

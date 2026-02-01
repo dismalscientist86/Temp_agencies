@@ -11,6 +11,7 @@ import seaborn as sns
 import time
 from typing import Optional
 import sys
+import os
 
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
@@ -207,8 +208,9 @@ class TempAgencyDemographicsCorrected:
 def main():
     """Main analysis for demographic breakdowns"""
     
-    API_KEY = ""
-    
+    # API key from environment variable (set in .env or shell)
+    API_KEY = os.environ.get("CENSUS_API_KEY", "")
+
     # Use the same year range that worked for timeline: 2015-2023
     # Start with most recent and work backwards
     YEAR = 2023

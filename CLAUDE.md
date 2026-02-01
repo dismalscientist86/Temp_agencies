@@ -12,6 +12,8 @@ Analysis of temporary employment agencies and staffing services over time using 
 Temp_agencies/
 ├── code/           # Python analysis scripts (7 files)
 ├── output/         # Generated visualizations (PNG) and data exports (CSV)
+├── .env            # Census API key (git-ignored)
+├── .gitignore
 ├── CLAUDE.md
 └── README.md
 ```
@@ -46,7 +48,9 @@ Temp_agencies/
 
 ## Setup and Configuration
 
-**Census API key required.** Obtain from https://api.census.gov/data/key_signup.html. Each script has an `API_KEY = ""` variable near the top that must be set before running.
+**Python:** Anaconda at `C:\Users\Sandler\anaconda3\python.exe` (Python 3.11.7, conda 24.5.0). Not on PATH — invoke with full path or activate the conda environment first.
+
+**Census API key:** All scripts read from the `CENSUS_API_KEY` environment variable via `os.environ.get("CENSUS_API_KEY", "")`. The key is stored in `.env` at the repo root (git-ignored). To obtain a key: https://api.census.gov/data/key_signup.html. To load the `.env` before running, either `set` the variable in your shell or use a tool like `python-dotenv`.
 
 **Output path:** Scripts save to `M:/Temp_agencies` (hardcoded). The `output/` directory in the repo contains previously generated results.
 

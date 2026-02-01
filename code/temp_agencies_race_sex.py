@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import time
+import os
 
 def get_demographic_snapshot(api_key, state="06", year="2022", quarter="1"):
     url = "https://api.census.gov/data/timeseries/qwi/sa"
@@ -53,7 +54,7 @@ def get_demographic_snapshot(api_key, state="06", year="2022", quarter="1"):
     return df_sex, df_age
 
 # --- Run and Plot ---
-MY_KEY = ""
+MY_KEY = os.environ.get("CENSUS_API_KEY", "")
 print("Fetching demographic data from Census QWI API...")
 df_sex, df_age = get_demographic_snapshot(MY_KEY)
 

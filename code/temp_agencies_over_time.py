@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 import time
+import os
 
 def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2024):
     url = "https://api.census.gov/data/timeseries/qwi/sa"
@@ -56,7 +57,7 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
     return df
 
 # --- Run ---
-API_KEY = ""
+API_KEY = os.environ.get("CENSUS_API_KEY", "")
 df_final = get_qwi_piece_by_piece(API_KEY)
 
 OUTPUT_DIR = "M:/Temp_agencies"
