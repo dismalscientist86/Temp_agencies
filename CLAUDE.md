@@ -1,30 +1,76 @@
-# Project Overview
+# CLAUDE.md
 
-Analysis of temporary employment agencies over time using Quarterly Workforce Indicators (QWI) data with 6-digit NAICS codes.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+Analysis of temporary employment agencies and staffing services over time using Quarterly Workforce Indicators (QWI) data from the U.S. Census Bureau. Examines national and state-level employment trends, demographic composition, industry comparisons, and temp agency share within the broader Administrative and Support Services sector.
 
 ## Structure
 
-- `code/` - Python analysis scripts
-- `output/` - Generated visualizations (PNG) and data exports (CSV)
+```
+Temp_agencies/
+├── code/           # Python analysis scripts (7 files)
+├── output/         # Generated visualizations (PNG) and data exports (CSV)
+├── CLAUDE.md
+└── README.md
+```
 
 ## Code Files
 
-- `temp_agencies_over_time.py` - Basic temporal analysis of temp agencies
-- `temp_agencies_over_time_national.py` - National-level temporal analysis
-- `employment_services_over_time.py` - Broader employment services trends
-- `temp_agencies_demographics.py` - Demographic breakdowns (age, education)
-- `temp_agencies_race_sex.py` - Race and sex analysis
-- `temp_agency_share_NAICS56.py` - Temp agency share within NAICS 56 sector
+**National analyses:**
+- `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Includes demographic breakdowns by sex, age, and education.
+- `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Dual-panel plots showing absolute levels and share percentage.
+- `temp_agency_wages.py`: Compares average earnings (EarnS, EarnHirAS) in temp agencies (561320) against NAICS 56 and total private sector. Class-based (`WageAnalyzer`). Employment-weighted national aggregation. 3-panel wage trends plot and wage gap visualization. Outputs quarterly and annual CSVs.
+- `temp_agencies_demographics.py`: National demographic breakdowns with corrected API parameters. Class-based (`TempAgencyDemographicsCorrected`). Analyzes sex, age group, and education. Note: race/ethnicity parameters removed due to API errors.
+
+**State-level analyses (California):**
+- `temp_agencies_over_time.py`: Basic quarterly timeline for a single state (default CA). Note: uses NAICS 561311 (Employment Placement Agencies), not 561320.
+- `employment_services_over_time.py`: Compares 4 NAICS codes within employment services (561311, 561320, 561312, 561330) for California.
+
+**Demographic snapshots:**
+- `temp_agencies_race_sex.py`: Sex and age distribution snapshot (despite filename, does not analyze race). Single state (CA), single quarter (default 2022 Q1).
 
 ## Data Source
 
-QWI (Quarterly Workforce Indicators) from the U.S. Census Bureau, filtered to NAICS 561320 (Temporary Help Services).
+**Census QWI API:** `https://api.census.gov/data/timeseries/qwi/sa`
+
+**Key NAICS codes used:**
+- 561320: Temporary Help Services (primary focus, used by national scripts)
+- 561311: Employment Placement Agencies (used by `temp_agencies_over_time.py`)
+- 561312: Executive Search Services (comparison only)
+- 561330: Professional Employer Organizations (comparison only)
+- 00: Total private sector (used by `temp_agency_wages.py` for wage comparison baseline)
+
+**Required API parameters:** `ownercode=A05, sex=0, agegrp=A00, education=E0, firmage=0, firmsize=0` (totals). Demographic breakdowns override the relevant parameter with category-specific codes.
+
+## Setup and Configuration
+
+**Census API key required.** Obtain from https://api.census.gov/data/key_signup.html. Each script has an `API_KEY = ""` variable near the top that must be set before running.
+
+**Output path:** Scripts save to `M:/Temp_agencies` (hardcoded). The `output/` directory in the repo contains previously generated results.
+
+**Dependencies:** requests, pandas, matplotlib, seaborn
 
 ## Running Scripts
 
-Scripts are standalone Python files. Run from the `code/` directory:
+Scripts are standalone. Run from the `code/` directory:
 ```bash
-python <script_name>.py
+cd code
+python temp_agencies_over_time_national.py   # National timeline (~10K API calls, slow)
+python temp_agency_share_NAICS56.py          # Sector share (~5.7K API calls)
+python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
+python temp_agencies_demographics.py         # Demographics (~400 API calls)
+python employment_services_over_time.py      # CA industry comparison
+python temp_agencies_over_time.py            # CA single-industry timeline
+python temp_agencies_race_sex.py             # CA demographic snapshot
 ```
 
-Output files are saved to the `output/` directory.
+National scripts aggregate across all 51 state/territory FIPS codes and are rate-limited, so they can take significant time to complete.
+
+## Known Issues
+
+- `temp_agencies_over_time.py` uses NAICS 561311, not 561320 like the other scripts
+- Education breakdown data (`temp_employment_by_education.csv`) returns all zeros — likely an API data availability issue
+- `temp_agencies_race_sex.py` filename is misleading — it only analyzes sex and age, not race
+- National timeline CSV covers 2015-2023 despite scripts requesting 2005-2024 (earlier years have no QWI data for this industry)
