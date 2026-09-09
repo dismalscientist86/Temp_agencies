@@ -1,2 +1,37 @@
+# Secrets
 .env
+
+# Python
 __pycache__/
+*.pyc
+
+# Large / raw data files — regenerable from the scripts, keep out of version control
+*.parquet
+*.feather
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.db
+*.sqlite
+
+# Archives
+*.zip
+*.gz
+*.tar
+*.7z
+*.rar
+
+# Raw API pulls / scratch data directories
+data/
+raw/
+raw_data/
+cache/
+
+# Logs
+*.log
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.ipynb_checkpoints/
