@@ -422,19 +422,37 @@ def main():
         
         # Plot timeline
         fig, ax = plt.subplots(figsize=(14, 6))
-        ax.plot(range(len(national_timeline)), national_timeline['Emp'], 
+        ax.plot(range(len(national_timeline)), national_timeline['Emp'],
                 marker='o', color='darkblue', linewidth=2, markersize=4)
-        ax.set_title(f'National Temp Agency Employment (NAICS {analyzer.temp_naics})', 
+        ax.set_title(f'National Temp Agency Employment (NAICS {analyzer.temp_naics})',
                      fontsize=14, fontweight='bold')
         ax.set_xlabel('Quarter', fontsize=12)
         ax.set_ylabel('Total Employees', fontsize=12)
-        
+
+        # Shade NBER recession periods (quarter ranges that fall within the series)
+        recessions = [
+            ('2007 Q4', '2009 Q2'),   # Great Recession (Dec 2007 - Jun 2009)
+            ('2020 Q1', '2020 Q2'),   # COVID-19 recession (Feb 2020 - Apr 2020)
+        ]
+        periods = list(national_timeline['period'])
+        labelled = False
+        for start, end in recessions:
+            if start not in periods and end not in periods:
+                continue
+            x0 = periods.index(start) if start in periods else 0
+            x1 = periods.index(end) if end in periods else len(periods) - 1
+            ax.axvspan(x0, x1, color='gray', alpha=0.18, linewidth=0, zorder=0,
+                       label='NBER recession' if not labelled else None)
+            labelled = True
+        if labelled:
+            ax.legend(loc='lower right', fontsize=10)
+
         # Set x-axis labels (show every 4th quarter)
         tick_positions = range(0, len(national_timeline), 4)
         tick_labels = [national_timeline.iloc[i]['period'] for i in tick_positions]
         ax.set_xticks(tick_positions)
         ax.set_xticklabels(tick_labels, rotation=45, ha='right')
-        
+
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         

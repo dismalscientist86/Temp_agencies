@@ -40,6 +40,7 @@ cache/
 *.vrb
 *.synctex.gz
 slides/_preview/
+slides/build/
 
 # OS / editor cruft
 .DS_Store
