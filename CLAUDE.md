@@ -27,7 +27,7 @@ Temp_agencies/
 - `temp_agencies_demographics.py`: National demographic breakdowns with corrected API parameters. Class-based (`TempAgencyDemographicsCorrected`). Analyzes sex, age group, and education. Note: race/ethnicity parameters removed due to API errors.
 
 **State-level analyses (California):**
-- `temp_agencies_over_time.py`: Basic quarterly timeline for a single state (default CA). Note: uses NAICS 561311 (Employment Placement Agencies), not 561320.
+- `temp_agencies_over_time.py`: Basic quarterly timeline of temp help services (NAICS 561320) for a single state (default CA), 2005-2024. Plots with one x-axis label per year.
 - `employment_services_over_time.py`: Compares 4 NAICS codes within employment services (561311, 561320, 561312, 561330) for California.
 
 **Demographic snapshots:**
@@ -39,7 +39,7 @@ Temp_agencies/
 
 **Key NAICS codes used:**
 - 561320: Temporary Help Services (primary focus, used by national scripts)
-- 561311: Employment Placement Agencies (used by `temp_agencies_over_time.py`)
+- 561311: Employment Placement Agencies (comparison only, in `employment_services_over_time.py`)
 - 561312: Executive Search Services (comparison only)
 - 561330: Professional Employer Organizations (comparison only)
 - 00: Total private sector (used by `temp_agency_wages.py` for wage comparison baseline)
@@ -74,7 +74,6 @@ National scripts aggregate across all 51 state/territory FIPS codes and are rate
 
 ## Known Issues
 
-- `temp_agencies_over_time.py` uses NAICS 561311, not 561320 like the other scripts
 - Education breakdown data (`temp_employment_by_education.csv`) returns all zeros — likely an API data availability issue
 - `temp_agencies_race_sex.py` filename is misleading — it only analyzes sex and age, not race
-- National timeline CSV covers 2015-2023 despite scripts requesting 2005-2024 (earlier years have no QWI data for this industry)
+- QWI revises published cells between pulls, so re-running a script can shift values slightly versus the committed CSVs

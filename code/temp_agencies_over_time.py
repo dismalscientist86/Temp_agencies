@@ -17,7 +17,7 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
             params = {
                 "get": "Emp,year,quarter",
                 "for": f"state:{state_code}",
-                "industry": "561311",
+                "industry": "561320",
                 "ownercode": "A05",
                 "sex": "0",
                 "agegrp": "A00",
@@ -63,10 +63,12 @@ df_final = get_qwi_piece_by_piece(API_KEY)
 OUTPUT_DIR = "M:/Temp_agencies"
 
 if df_final is not None:
-    plt.figure(figsize=(10, 5))
-    plt.plot(df_final['period'], df_final['Emp'], marker='o', color='darkblue', linewidth=2)
-    plt.title('NAICS 561311: Employment Over Time - California (Quarterly)')
-    plt.xticks(rotation=45)
+    plt.figure(figsize=(12, 5))
+    periods = list(df_final['period'])
+    plt.plot(range(len(periods)), df_final['Emp'], marker='o', color='darkblue', linewidth=2)
+    plt.title('NAICS 561320 (Temporary Help Services): Employment Over Time - California (Quarterly)')
+    ticks = range(0, len(periods), 4)  # one label per year
+    plt.xticks(ticks, [periods[i] for i in ticks], rotation=45, ha='right')
     plt.ylabel('Total Employees')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()

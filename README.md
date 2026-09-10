@@ -25,8 +25,8 @@ Census QWI API: `https://api.census.gov/data/timeseries/qwi/sa`
 
 | NAICS | Description | Use |
 |-------|-------------|-----|
-| 561320 | Temporary Help Services | Primary focus (national scripts) |
-| 561311 | Employment Placement Agencies | `temp_agencies_over_time.py` |
+| 561320 | Temporary Help Services | Primary focus (all temp-agency scripts) |
+| 561311 | Employment Placement Agencies | Comparison only (`employment_services_over_time.py`) |
 | 561312 | Executive Search Services | Comparison only |
 | 561330 | Professional Employer Organizations | Comparison only |
 | 56 | Administrative and Support Services | Sector-share / wage baseline |
@@ -54,7 +54,7 @@ return no data even when requested.
 
 | Script | What it does |
 |--------|--------------|
-| `temp_agencies_over_time.py` | Quarterly timeline for a single state (default CA). Uses NAICS **561311** |
+| `temp_agencies_over_time.py` | Quarterly timeline of temp help services (561320) for a single state (default CA), 2005--2024 |
 | `employment_services_over_time.py` | Compares four employment-services NAICS codes (561311, 561320, 561312, 561330) for CA |
 | `temp_agencies_race_sex.py` | Sex and age distribution snapshot for a single state/quarter (default CA, 2022 Q1) |
 
@@ -108,8 +108,7 @@ Generated into `output/`:
 
 ## Known issues
 
-- `temp_agencies_over_time.py` uses NAICS 561311, not 561320 like the other scripts.
 - Education-breakdown data returns all zeros — a QWI data-availability limitation.
 - `temp_agencies_race_sex.py` analyzes only sex and age despite its filename.
-- National timeline data is present only for ~2015–2023 even though scripts
-  request a wider range.
+- QWI cells are revised between pulls, so re-running a script can shift values
+  slightly versus the committed CSVs.
