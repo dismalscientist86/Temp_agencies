@@ -48,6 +48,8 @@ return no data even when requested.
 | `temp_agencies_over_time_national.py` | National temp-agency employment timeline (50 states + DC), with sex / age / education breakdowns |
 | `temp_agency_share_NAICS56.py` | Temp agency (561320) employment as a share of NAICS 56 |
 | `temp_agency_wages.py` | Average earnings (EarnS, EarnHirAS) in temp agencies vs. NAICS 56 and total private; employment-weighted national aggregation |
+| `temp_agency_turnover.py` | Job stability and churn (EmpS/Emp, accession/separation/churn rates, stable-hire share) vs. NAICS 56 and total private, 2005--2023 |
+| `temp_penetration_by_state.py` | Temp help (561320) as a share of total private employment, by state; tile-grid map + ranked bar, 2023 vs. 2010 |
 | `temp_agencies_demographics.py` | National demographic breakdowns (sex, age group, education) |
 
 **California / state-level**
@@ -87,14 +89,19 @@ cd code
 python temp_agencies_over_time_national.py   # National timeline (~10K API calls, slow)
 python temp_agency_share_NAICS56.py          # Sector share (~5.7K API calls)
 python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
+python temp_agency_turnover.py               # Turnover / job stability (~150 API calls)
+python temp_penetration_by_state.py          # State penetration map (~200 API calls)
 python temp_agencies_demographics.py         # Demographics (~400 API calls)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot
 ```
 
-National scripts aggregate across all 51 state/territory FIPS codes and are
+The older national scripts issue one request per state × year × quarter and are
 rate-limited (~0.08s/request), so a full run takes tens of minutes.
+`temp_agency_turnover.py` and `temp_penetration_by_state.py` instead pull a whole
+year range per state in one call (`time=from YYYY to YYYY`), so they finish in a
+couple of minutes.
 
 ## Outputs
 
@@ -103,6 +110,8 @@ Generated into `output/`:
 - `national_timeline.png`, `national_temp_employment.csv` — national employment trend
 - `sector_share_plot.png`, `temp_agency_sector_share*.csv` — 561320 share of NAICS 56
 - `wage_trends.png`, `wage_gap.png`, `temp_agency_wages*.csv` — wage comparison
+- `turnover_trends.png`, `turnover_comparison.png`, `temp_agency_turnover*.csv` — job stability / churn
+- `temp_penetration_map.png`, `temp_penetration_ranking.png`, `temp_penetration_by_state.csv` — state penetration
 - `temp_employment_by_*` — demographic breakdown plots and tables
 - `employment_services_over_time.*`, `temp_agencies_over_time.*` — California analyses
 

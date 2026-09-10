@@ -24,6 +24,8 @@ Temp_agencies/
 - `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Includes demographic breakdowns by sex, age, and education.
 - `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Dual-panel plots showing absolute levels and share percentage.
 - `temp_agency_wages.py`: Compares average earnings (EarnS, EarnHirAS) in temp agencies (561320) against NAICS 56 and total private sector. Class-based (`WageAnalyzer`). Employment-weighted national aggregation. 3-panel wage trends plot and wage gap visualization. Outputs quarterly and annual CSVs.
+- `temp_agency_turnover.py`: Job stability and churn vs. NAICS 56 and total private, 2005-2023. Class-based (`TurnoverAnalyzer`). Pulls QWI counts (Emp, EmpEnd, EmpS, HirA, HirN, Sep, HirAs, SepS), sums to national, derives rates: stable_share (EmpS/Emp), accession/separation/churn rates, stable_hire_share (HirAs/HirA). 3-panel trends + comparison bar. Uses `time=from YYYY to YYYY` batching (one call per state).
+- `temp_penetration_by_state.py`: Temp help (561320) as a share of total private (00) employment by state. Class-based (`PenetrationAnalyzer`). Tile-grid (`GRID`) choropleth in pure matplotlib (no geo deps) + ranked bar. Compares LATEST_YEAR (2023) with COMPARE_YEAR (2010). One call per state per industry per year.
 - `temp_agencies_demographics.py`: National demographic breakdowns with corrected API parameters. Class-based (`TempAgencyDemographicsCorrected`). Analyzes sex, age group, and education. Note: race/ethnicity parameters removed due to API errors.
 
 **State-level analyses (California):**
@@ -64,13 +66,15 @@ cd code
 python temp_agencies_over_time_national.py   # National timeline (~10K API calls, slow)
 python temp_agency_share_NAICS56.py          # Sector share (~5.7K API calls)
 python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
+python temp_agency_turnover.py               # Turnover / job stability (~150 API calls, fast)
+python temp_penetration_by_state.py          # State penetration map (~200 API calls, fast)
 python temp_agencies_demographics.py         # Demographics (~400 API calls)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot
 ```
 
-National scripts aggregate across all 51 state/territory FIPS codes and are rate-limited, so they can take significant time to complete.
+The older national scripts issue one request per state/year/quarter and are rate-limited, so they take tens of minutes. `temp_agency_turnover.py` and `temp_penetration_by_state.py` pull a whole year range per state in one call (`time=from YYYY to YYYY`) and finish in a couple of minutes — the preferred pattern for new scripts.
 
 ## Known Issues
 
