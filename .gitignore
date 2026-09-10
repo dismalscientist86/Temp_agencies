@@ -31,6 +31,16 @@ cache/
 # Logs
 *.log
 
+# LaTeX / Beamer build artifacts
+*.aux
+*.nav
+*.snm
+*.toc
+*.out
+*.vrb
+*.synctex.gz
+slides/_preview/
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
