@@ -25,7 +25,8 @@ Temp_agencies/
 - `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Dual-panel plots showing absolute levels and share percentage.
 - `temp_agency_wages.py`: Compares average earnings (EarnS, EarnHirAS) in temp agencies (561320) against NAICS 56 and total private sector. Class-based (`WageAnalyzer`). Employment-weighted national aggregation. 3-panel wage trends plot and wage gap visualization. Outputs quarterly and annual CSVs.
 - `temp_agency_turnover.py`: Job stability and churn vs. NAICS 56 and total private, 2005-2023. Class-based (`TurnoverAnalyzer`). Pulls QWI counts (Emp, EmpEnd, EmpS, HirA, HirN, Sep, HirAs, SepS), sums to national, derives rates: stable_share (EmpS/Emp), accession/separation/churn rates, stable_hire_share (HirAs/HirA). 3-panel trends + comparison bar. Uses `time=from YYYY to YYYY` batching (one call per state).
-- `temp_penetration_by_state.py`: Temp help (561320) as a share of total private (00) employment by state. Class-based (`PenetrationAnalyzer`). Tile-grid (`GRID`) choropleth in pure matplotlib (no geo deps) + ranked bar. Compares LATEST_YEAR (2023) with COMPARE_YEAR (2010). One call per state per industry per year.
+- `temp_penetration_by_state.py`: Temp help (561320) as a share of total private (00) employment by state. Class-based (`PenetrationAnalyzer`). Tile-grid (`GRID`) choropleth in pure matplotlib (no geo deps) + ranked bar. Compares LATEST_YEAR (2023) with COMPARE_YEAR (2010); `LATEST_FALLBACK` covers MI (left QWI after 2021).
+- `temp_agency_occupations.py`: Occupational mix and occupational wages of NAICS 561320 from BLS OEWS (May 2025). No API — OEWS is not served by the BLS time-series API and www.bls.gov blocks scripted downloads; `output/oews_561320_may2025.csv` was captured from the OEWS query system (data.bls.gov/oes) and is committed. Script reads that CSV, writes a major-groups CSV and three charts (mix, share-vs-pay, top detailed occupations).
 - `temp_agencies_demographics.py`: National demographic breakdowns for one quarter (default 2023 Q1). Class-based (`TempAgencyDemographics`). Sex and age come from the `qwi/sa` dataset; race and ethnicity from `qwi/rh` (they are not on `sa`). Sums per-category employment across states. Education is not attempted — it lives only on `qwi/se` for the 25+ restriction and is fully suppressed for NAICS 561320.
 
 **State-level analyses (California):**
@@ -69,6 +70,7 @@ python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
 python temp_agency_turnover.py               # Turnover / job stability (~150 API calls, fast)
 python temp_penetration_by_state.py          # State penetration map (~200 API calls, fast)
 python temp_agencies_demographics.py         # Sex/age/race/ethnicity (~900 API calls)
+python temp_agency_occupations.py            # OEWS occupational mix (offline; reads a committed CSV)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot

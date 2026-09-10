@@ -78,6 +78,10 @@
       \smallskip
       \textbf{Coverage.} 2005--2024 where available; the temp-help series is
       complete from 2005. Suppressed cells (flags \texttt{N/D/S}) are dropped.
+
+      \smallskip
+      \textbf{Also.} Race / ethnicity from QWI's \texttt{rh} dataset; the
+      occupational mix from BLS \emph{OEWS} (May 2025).
     \end{column}
     \begin{column}{0.44\textwidth}
       \begin{block}{Industries compared}
@@ -388,6 +392,37 @@
 \end{frame}
 
 %=======================================================================
+\section{Occupational mix}
+%=======================================================================
+\begin{frame}{What temp-agency workers actually do}
+  \fig[width=\textwidth,height=0.80\textheight,keepaspectratio]{oews_occupation_mix.png}
+\end{frame}
+
+\begin{frame}{Occupational mix --- warehouse and factory labour, then everything else}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \fig[width=\textwidth]{oews_top_occupations.png}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{itemize}
+        \item \textbf{Half} of temp-help jobs are blue-collar: transportation
+              \& material moving (24\%) plus production (17\%) alone are
+              \textbf{41\%}.
+        \item One occupation --- \textbf{hand laborers / freight \& material
+              movers} --- is \textbf{15\%} of the entire sector (394k jobs).
+        \item But the sector is genuinely mixed: registered nurses (85k),
+              substitute teachers (77k), HR specialists (75k), software
+              developers (26k).
+        \item The two largest groups are also the \textbf{lowest-paid}
+              ($\approx\$37$k mean vs.\ the \$54k all-occupation mean) --- the
+              mix, not just the "temp" label, drags sector pay down.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \source{BLS OEWS, NAICS 561320, May 2025. OEWS annual wage assumes full-year work.}
+\end{frame}
+
+%=======================================================================
 \section{Within employment services}
 %=======================================================================
 \begin{frame}{Employment-services sub-sectors (California, 2005--2024)}
@@ -417,6 +452,7 @@
 \section{Takeaways}
 %=======================================================================
 \begin{frame}{Takeaways}
+  \small
   \begin{enumerate}
     \item \textbf{Amplified cycle.} Temp employment swings far more than total
           employment --- $-34\%$ in 2008--09, $-23\%$ in early 2020, and an
@@ -433,6 +469,9 @@
     \item \textbf{Concentrated geographically.} A \textbf{5-fold} spread across
           states, highest in the Southeast / industrial belt where supply chains
           staff through agencies.
+    \item \textbf{Blue-collar core.} Half the jobs are warehouse / material-moving
+          and production work --- and those two groups are also the lowest-paid,
+          which is much of why the sector's wages sit low.
     \item \textbf{Distinctive workforce.} Roughly even by sex and prime-aged,
           but \textbf{Black workers are about twice as prevalent} as in the
           economy overall (27\% vs.\ 13\%); Hispanic workers modestly so.
@@ -454,6 +493,9 @@
           suppressed --- so no education breakdown is possible.
     \item \textbf{Michigan} left QWI after 2021 and \textbf{Alaska} does not
           report, so the state map uses MI's 2021 figure and omits AK.
+    \item OEWS is a separate survey (establishment-reported, annual) and is not
+          in the BLS API --- the 561320 table was taken from the OEWS query
+          system. Its "annual wage" assumes full-year work.
     \item California is used for the sub-sector and single-state views; national
           patterns may differ.
   \end{itemize}

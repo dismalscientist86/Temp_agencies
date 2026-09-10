@@ -36,8 +36,13 @@ Required "totals" API parameters: `ownercode=A05, sex=0, agegrp=A00,
 education=E0, firmage=0, firmsize=0`. Demographic breakdowns override the
 relevant parameter with category-specific codes.
 
-QWI coverage for this industry effectively begins in **2015**; earlier years
-return no data even when requested.
+QWI worker-characteristic datasets are split by endpoint: `qwi/sa` (sex × age),
+`qwi/se` (sex × education), `qwi/rh` (race × ethnicity). The employment/earnings
+series for NAICS 561320 run from **2005**.
+
+**BLS OEWS** (occupational mix, `temp_agency_occupations.py`) is not in the BLS
+API; `output/oews_561320_may2025.csv` was captured from the OEWS query system
+(`https://data.bls.gov/oes/#/industry/561320/2025`) and is refreshed by hand.
 
 ## Scripts
 
@@ -50,6 +55,7 @@ return no data even when requested.
 | `temp_agency_wages.py` | Average earnings (EarnS, EarnHirAS) in temp agencies vs. NAICS 56 and total private; employment-weighted national aggregation |
 | `temp_agency_turnover.py` | Job stability and churn (EmpS/Emp, accession/separation/churn rates, stable-hire share) vs. NAICS 56 and total private, 2005--2023 |
 | `temp_penetration_by_state.py` | Temp help (561320) as a share of total private employment, by state; tile-grid map + ranked bar, 2023 vs. 2010 |
+| `temp_agency_occupations.py` | Occupational mix and occupational wages of NAICS 561320 from **BLS OEWS** (May 2025); reads `output/oews_561320_may2025.csv` |
 | `temp_agencies_demographics.py` | National demographic breakdowns for a quarter: sex / age (`qwi/sa`), race / ethnicity (`qwi/rh`) |
 
 **California / state-level**
@@ -92,6 +98,7 @@ python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
 python temp_agency_turnover.py               # Turnover / job stability (~150 API calls)
 python temp_penetration_by_state.py          # State penetration map (~200 API calls)
 python temp_agencies_demographics.py         # Sex/age/race/ethnicity (~900 API calls)
+python temp_agency_occupations.py            # OEWS occupational mix (no API; reads a CSV)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot
@@ -113,6 +120,7 @@ Generated into `output/`:
 - `turnover_trends.png`, `turnover_comparison.png`, `temp_agency_turnover*.csv` — job stability / churn
 - `temp_penetration_map.png`, `temp_penetration_ranking.png`, `temp_penetration_by_state.csv` — state penetration
 - `temp_employment_by_*` — demographic breakdown plots and tables
+- `oews_occupation_mix.png`, `oews_top_occupations.png`, `oews_occupation_pay.png`, `oews_561320_*.csv` — occupational mix
 - `employment_services_over_time.*`, `temp_agencies_over_time.*` — California analyses
 
 ## Known issues
