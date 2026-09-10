@@ -50,7 +50,7 @@ return no data even when requested.
 | `temp_agency_wages.py` | Average earnings (EarnS, EarnHirAS) in temp agencies vs. NAICS 56 and total private; employment-weighted national aggregation |
 | `temp_agency_turnover.py` | Job stability and churn (EmpS/Emp, accession/separation/churn rates, stable-hire share) vs. NAICS 56 and total private, 2005--2023 |
 | `temp_penetration_by_state.py` | Temp help (561320) as a share of total private employment, by state; tile-grid map + ranked bar, 2023 vs. 2010 |
-| `temp_agencies_demographics.py` | National demographic breakdowns (sex, age group, education) |
+| `temp_agencies_demographics.py` | National demographic breakdowns for a quarter: sex / age (`qwi/sa`), race / ethnicity (`qwi/rh`) |
 
 **California / state-level**
 
@@ -91,7 +91,7 @@ python temp_agency_share_NAICS56.py          # Sector share (~5.7K API calls)
 python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
 python temp_agency_turnover.py               # Turnover / job stability (~150 API calls)
 python temp_penetration_by_state.py          # State penetration map (~200 API calls)
-python temp_agencies_demographics.py         # Demographics (~400 API calls)
+python temp_agencies_demographics.py         # Sex/age/race/ethnicity (~900 API calls)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot
@@ -117,7 +117,8 @@ Generated into `output/`:
 
 ## Known issues
 
-- Education-breakdown data returns all zeros — a QWI data-availability limitation.
+- No education breakdown: QWI publishes education only on the `se` dataset for
+  the 25+ restriction, and every state-level cell for NAICS 561320 is suppressed.
 - `temp_agencies_race_sex.py` analyzes only sex and age despite its filename.
 - QWI cells are revised between pulls, so re-running a script can shift values
   slightly versus the committed CSVs.

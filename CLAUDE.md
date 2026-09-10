@@ -21,12 +21,12 @@ Temp_agencies/
 ## Code Files
 
 **National analyses:**
-- `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Includes demographic breakdowns by sex, age, and education.
+- `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Recession shading on the plot. Also has sex/age/education breakdown code, but education is unavailable (see Known Issues) — use `temp_agencies_demographics.py` for demographics.
 - `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Dual-panel plots showing absolute levels and share percentage.
 - `temp_agency_wages.py`: Compares average earnings (EarnS, EarnHirAS) in temp agencies (561320) against NAICS 56 and total private sector. Class-based (`WageAnalyzer`). Employment-weighted national aggregation. 3-panel wage trends plot and wage gap visualization. Outputs quarterly and annual CSVs.
 - `temp_agency_turnover.py`: Job stability and churn vs. NAICS 56 and total private, 2005-2023. Class-based (`TurnoverAnalyzer`). Pulls QWI counts (Emp, EmpEnd, EmpS, HirA, HirN, Sep, HirAs, SepS), sums to national, derives rates: stable_share (EmpS/Emp), accession/separation/churn rates, stable_hire_share (HirAs/HirA). 3-panel trends + comparison bar. Uses `time=from YYYY to YYYY` batching (one call per state).
 - `temp_penetration_by_state.py`: Temp help (561320) as a share of total private (00) employment by state. Class-based (`PenetrationAnalyzer`). Tile-grid (`GRID`) choropleth in pure matplotlib (no geo deps) + ranked bar. Compares LATEST_YEAR (2023) with COMPARE_YEAR (2010). One call per state per industry per year.
-- `temp_agencies_demographics.py`: National demographic breakdowns with corrected API parameters. Class-based (`TempAgencyDemographicsCorrected`). Analyzes sex, age group, and education. Note: race/ethnicity parameters removed due to API errors.
+- `temp_agencies_demographics.py`: National demographic breakdowns for one quarter (default 2023 Q1). Class-based (`TempAgencyDemographics`). Sex and age come from the `qwi/sa` dataset; race and ethnicity from `qwi/rh` (they are not on `sa`). Sums per-category employment across states. Education is not attempted — it lives only on `qwi/se` for the 25+ restriction and is fully suppressed for NAICS 561320.
 
 **State-level analyses (California):**
 - `temp_agencies_over_time.py`: Basic quarterly timeline of temp help services (NAICS 561320) for a single state (default CA), 2005-2024. Plots with one x-axis label per year.
@@ -68,7 +68,7 @@ python temp_agency_share_NAICS56.py          # Sector share (~5.7K API calls)
 python temp_agency_wages.py                  # Wage comparison (~8.6K API calls)
 python temp_agency_turnover.py               # Turnover / job stability (~150 API calls, fast)
 python temp_penetration_by_state.py          # State penetration map (~200 API calls, fast)
-python temp_agencies_demographics.py         # Demographics (~400 API calls)
+python temp_agencies_demographics.py         # Sex/age/race/ethnicity (~900 API calls)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot
@@ -78,6 +78,6 @@ The older national scripts issue one request per state/year/quarter and are rate
 
 ## Known Issues
 
-- Education breakdown data (`temp_employment_by_education.csv`) returns all zeros — likely an API data availability issue
+- No education breakdown: QWI education is only on the `se` dataset for the 25+ restriction and is fully suppressed for NAICS 561320 at state level
 - `temp_agencies_race_sex.py` filename is misleading — it only analyzes sex and age, not race
 - QWI revises published cells between pulls, so re-running a script can shift values slightly versus the committed CSVs

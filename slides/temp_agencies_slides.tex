@@ -355,6 +355,38 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Who works in temp help? --- Race and ethnicity (2023\,Q1, national)}
+  \begin{columns}[c]
+    \begin{column}{0.58\textwidth}
+      \fig[width=\textwidth]{temp_employment_by_race_2023_Q1.png}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \small
+      \begin{tabular}{@{}lS[table-format=2.1]@{}}
+        \toprule
+        Group & {\% of temp help} \\
+        \midrule
+        White               & 62.6 \\
+        Black                & 26.7 \\
+        Asian                & \phantom{0}6.2 \\
+        Other / two+         & \phantom{0}4.5 \\
+        \midrule
+        Hispanic (any race)  & 21.1 \\
+        \bottomrule
+      \end{tabular}
+      \medskip
+      \begin{itemize}\footnotesize
+        \item \textbf{Black workers are \(\approx\)27\%} of temp help --- about
+              \textbf{twice} their \(\approx\)13\% share of US employment overall.
+        \item \textbf{Hispanic} workers are \(\approx\)21\%, a smaller over-index.
+        \item Consistent with the sector's concentration in warehousing,
+              food-processing and light manufacturing.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+  \source{QWI \texttt{rh} dataset, NAICS 561320, 49 reporting states. Race and Hispanic ethnicity are tabulated separately.}
+\end{frame}
+
 %=======================================================================
 \section{Within employment services}
 %=======================================================================
@@ -401,8 +433,9 @@
     \item \textbf{Concentrated geographically.} A \textbf{5-fold} spread across
           states, highest in the Southeast / industrial belt where supply chains
           staff through agencies.
-    \item \textbf{Broad workforce.} Roughly even by sex; concentrated in
-          prime working ages but with meaningful shares both under 25 and over 55.
+    \item \textbf{Distinctive workforce.} Roughly even by sex and prime-aged,
+          but \textbf{Black workers are about twice as prevalent} as in the
+          economy overall (27\% vs.\ 13\%); Hispanic workers modestly so.
   \end{enumerate}
 \end{frame}
 
@@ -416,8 +449,9 @@
     \item ``Employment'' is a count of jobs (beginning-of-quarter), not
           full-time-equivalents; temp assignments are short, so headcount
           overstates labour input relative to other sectors.
-    \item The education breakdown returns all zeros for this industry (a QWI
-          data-availability limit) and is omitted.
+    \item Education is published only on the QWI \texttt{se} dataset for the
+          25+ restriction, and every state-level cell for NAICS 561320 is
+          suppressed --- so no education breakdown is possible.
     \item \textbf{Michigan} left QWI after 2021 and \textbf{Alaska} does not
           report, so the state map uses MI's 2021 figure and omits AK.
     \item California is used for the sub-sector and single-state views; national
