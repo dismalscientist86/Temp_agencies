@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import time
 import os
 
+from qwi_seasonal import seasonally_adjust
+
 def get_qwi_data_for_naics(api_key, naics_code, state_code="06", start_year=2005, end_year=2024):
     url = "https://api.census.gov/data/timeseries/qwi/sa"
     all_rows = []
@@ -71,15 +73,22 @@ df_merged = df_merged.merge(dfs["561330"][["period", "Emp"]].rename(columns={"Em
 # Save outputs straight into the repo's output/ folder (this file lives in code/)
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
+# QWI has no seasonally-adjusted series (see qwi_seasonal.py); approximate one
+# ourselves for each NAICS code so the plot isn't dominated by the Q4 hiring spike.
+df_merged['year'] = df_merged['period'].str.split(' Q').str[0].astype(int)
+df_merged['quarter'] = df_merged['period'].str.split(' Q').str[1].astype(int)
+for code in naics_codes:
+    df_merged = seasonally_adjust(df_merged, code)
+
 # Plot with cleaned-up x-axis
 plt.figure(figsize=(12, 6))
-plt.plot(df_merged['period'], df_merged['561311'], marker='o', label='Employment Services (561311)')
-plt.plot(df_merged['period'], df_merged['561320'], marker='s', label='Temporary Help Services (561320)')
-plt.plot(df_merged['period'], df_merged['561312'], marker='o', label='Executive Search Services (561312)')
-plt.plot(df_merged['period'], df_merged['561330'], marker='s', label='Professional Employer Organization (561330)')
+plt.plot(df_merged['period'], df_merged['561311_sa'], marker='o', label='Employment Services (561311)')
+plt.plot(df_merged['period'], df_merged['561320_sa'], marker='s', label='Temporary Help Services (561320)')
+plt.plot(df_merged['period'], df_merged['561312_sa'], marker='o', label='Executive Search Services (561312)')
+plt.plot(df_merged['period'], df_merged['561330_sa'], marker='s', label='Professional Employer Organization (561330)')
 
-plt.title('Employment Over Time by NAICS Code - California (Quarterly)')
-plt.ylabel('Total Employees')
+plt.title('Employment Over Time by NAICS Code - California (Quarterly, seasonally adjusted)')
+plt.ylabel('Total Employees (seasonally adjusted)')
 plt.xlabel('Period')
 plt.grid(True, alpha=0.3)
 plt.legend()

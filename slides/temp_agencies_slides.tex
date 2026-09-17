@@ -68,8 +68,10 @@
   \begin{columns}[T]
     \begin{column}{0.54\textwidth}
       \textbf{Source.} Census \emph{Quarterly Workforce Indicators} (QWI), LEHD
-      program, via the API endpoint \texttt{timeseries/qwi/sa}. Quarterly,
-      not seasonally adjusted.
+      program, via the API endpoint \texttt{timeseries/qwi/sa}. Quarterly.
+      QWI publishes no seasonally-adjusted series (confirmed against both the
+      API and the raw bulk files); employment-level charts here use a
+      self-computed approximation instead (see \emph{Seasonality}).
 
       \smallskip
       \textbf{Geography.} State-level counts for the 50 states + DC, summed to a
@@ -113,25 +115,54 @@
 %=======================================================================
 \begin{frame}{National temp employment, 2005--2023}
   \fig[height=0.72\textheight]{national_timeline.png}
-  \source{QWI NAICS 561320, sum of 50 states + DC. Not seasonally adjusted.}
+  \source{QWI NAICS 561320, sum of 50 states + DC. Seasonally adjusted
+  (self-computed --- QWI has no official SA series; see \emph{Seasonality}).}
 \end{frame}
 
 \begin{frame}{National temp employment --- what the series shows}
   \begin{itemize}
-    \item \textbf{Great Recession:} fell from \num{2.61} million (2006\,Q4) to
-          \num{1.73} million (2009\,Q2), a drop of about \textbf{34\%} --- far
+    \item \textbf{Great Recession:} fell from \num{2.53} million (2006\,Q4) to
+          \num{1.78} million (2009\,Q2), a drop of about \textbf{30\%} --- far
           deeper than the total-employment decline.
     \item \textbf{2010s expansion:} steady recovery; the prior peak was surpassed
-          by 2014 and employment reached about \textbf{\num{3.14} million}
-          (2018\,Q4).
-    \item \textbf{Pandemic:} \num{3.01} million (2020\,Q1) $\rightarrow$
-          \num{2.32} million (2020\,Q3), $-23\%$ in two quarters, then a rapid
-          rebound to $\approx\num{3.05}$ million through 2022.
-    \item \textbf{2023 slowdown:} down about \textbf{11\%} from the 2022 peak to
-          \num{2.72} million by 2023\,Q4 --- back to 2015 levels, and consistent
+          by 2014 and employment reached about \textbf{\num{3.11} million}
+          (2018\,Q3).
+    \item \textbf{Pandemic:} \num{2.99} million (2020\,Q1) $\rightarrow$
+          \num{2.34} million (2020\,Q3), $-22\%$ in two quarters, then a rapid
+          rebound to an all-time high of \textbf{\num{3.14} million} (2022\,Q2).
+    \item \textbf{2023 slowdown:} down about \textbf{16\%} from that peak to
+          \num{2.63} million by 2023\,Q4 --- back to 2013 levels, and consistent
           with temp help leading the broader labour-market cycle.
-    \item Strong seasonality: Q4 is always the local high (holiday-quarter
-          staffing), Q2 typically the low.
+    \item Seasonally adjusted throughout (see \emph{Seasonality}, below) ---
+          the raw series has a strong Q4 high / Q2 low every year.
+  \end{itemize}
+\end{frame}
+
+%=======================================================================
+\section{Seasonality}
+%=======================================================================
+\begin{frame}{Why seasonally adjusted --- and how}
+  \fig[height=0.74\textheight]{national_seasonality.png}
+\end{frame}
+
+\begin{frame}{Seasonality --- how we approximate it}
+  \begin{itemize}
+    \item QWI has no official seasonally-adjusted series --- we checked both
+          the API (\texttt{seasonadj} returns data only for \texttt{U},
+          Unadjusted) and the raw bulk release files (same result).
+    \item Every employment-level chart in this deck instead uses a
+          self-computed approximation: classical multiplicative seasonal
+          decomposition (\texttt{statsmodels.seasonal\_decompose}, period 4)
+          fit to each series, dividing out the repeating quarterly pattern.
+    \item The pattern is consistent and large: national temp employment runs
+          \textbf{+3.1\%} above trend in Q4 (holiday-quarter staffing) and
+          \textbf{$-$2.8\%} below trend in Q2.
+    \item Ratios (temp's \% share of NAICS 56, turnover rates) are left on
+          the raw QWI values --- seasonality in the numerator and denominator
+          largely cancels there.
+    \item This is an approximation, not an official series; treat exact
+          turning-point quarters and small quarter-to-quarter moves with
+          appropriate caution.
   \end{itemize}
 \end{frame}
 
@@ -140,7 +171,8 @@
 %=======================================================================
 \begin{frame}{Temp help as a share of Administrative \& Support Services (NAICS 56)}
   \fig[height=0.72\textheight]{sector_share_plot.png}
-  \source{QWI: NAICS 561320 employment $\div$ NAICS 56 employment, national.}
+  \source{QWI: NAICS 561320 vs.\ NAICS 56 employment, national, seasonally
+  adjusted (self-computed). The share (\%) table opposite uses the raw ratio.}
 \end{frame}
 
 \begin{frame}{Share of NAICS 56 --- roughly one-third, and cyclical}
@@ -424,24 +456,23 @@
 %=======================================================================
 \begin{frame}{Employment-services sub-sectors (California, 2005--2024)}
   \fig[height=0.70\textheight]{employment_services_over_time.png}
-  \source{QWI NAICS 561311/561320/561312/561330, California.}
+  \source{QWI NAICS 561311/561320/561312/561330, California, seasonally adjusted (self-computed).}
 \end{frame}
 
 \begin{frame}{Employment services --- temp help dominates}
   \begin{itemize}
-    \item In California, \textbf{561320 (temp help)} is roughly \textbf{5--6$\times$}
-          the size of the rest of employment services combined --- about
-          \num{326}k jobs in 2005, a peak near \num{399}k in 2022, then a sharp
-          fall to \num{320}k by 2024.
-    \item \textbf{561330 (PEOs)} grew from \(\approx\)\num{45}k to \(\approx\)\num{64}k,
+    \item In California, \textbf{561320 (temp help)} runs roughly
+          \textbf{3--5$\times$} the size of the rest of employment services
+          combined --- about \num{310}k jobs in 2005, an all-time peak of
+          \num{410}k (2022\,Q2), then a fall to \num{325}k by 2024.
+    \item \textbf{561330 (PEOs)} grew from \(\approx\)\num{48}k to \(\approx\)\num{58}k,
           with a step-up after 2021.
-    \item \textbf{561311 (employment placement)} is flat near \num{40}k;
+    \item \textbf{561311 (employment placement)} is flat near \num{44}k;
           \textbf{561312 (executive search)} is tiny (\(\approx\)\num{3}k).
     \item The single-state script (\texttt{temp\_agencies\_over\_time.py}) tracks
           the same California 561320 series, mirroring the national pattern:
-          $-39\%$ in 2008--09, an all-time peak near \num{419}k (2017\,Q4),
-          the 2020 dip, and a slide from \num{400}k (2022) toward \num{330}k
-          (2024).
+          $-38\%$ in 2008--09, the same 2022\,Q2 all-time peak, the 2020 dip,
+          and a slide from \num{410}k (2022) toward \num{325}k (2024).
   \end{itemize}
 \end{frame}
 
@@ -452,8 +483,9 @@
   \small
   \begin{enumerate}
     \item \textbf{Amplified cycle.} Temp employment swings far more than total
-          employment --- $-34\%$ in 2008--09, $-23\%$ in early 2020, and an
-          $11\%$ decline through 2023 that led the broader slowdown.
+          employment --- $-30\%$ in 2008--09, $-22\%$ in early 2020, and a
+          $16\%$ decline from the 2022 peak through 2023 that led the broader
+          slowdown.
     \item \textbf{Stable structural weight.} Despite the swings, temp help holds
           near \textbf{one-third} of Administrative \& Support Services.
     \item \textbf{Persistent but shrinking wage gap.} Temp workers earn about
@@ -480,8 +512,11 @@
     \item QWI is a by-product of state UI records; small state $\times$ quarter
           $\times$ demographic cells are suppressed, so demographic totals rest
           on 48--49 states, not all 51 jurisdictions.
-    \item Series are \textbf{not seasonally adjusted}; compare like quarters or
-          annual averages.
+    \item Employment-level charts are seasonally adjusted with a
+          self-computed approximation, not an official series (see
+          \emph{Seasonality}); wage, turnover, and share ratios remain on
+          raw QWI values, where seasonality in the numerator and denominator
+          largely cancels.
     \item ``Employment'' is a count of jobs (beginning-of-quarter), not
           full-time-equivalents; temp assignments are short, so headcount
           overstates labour input relative to other sectors.

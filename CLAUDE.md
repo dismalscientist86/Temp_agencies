@@ -10,7 +10,7 @@ Analysis of temporary employment agencies and staffing services over time using 
 
 ```
 Temp_agencies/
-├── code/           # Python analysis scripts (7 files)
+├── code/           # Python analysis scripts (12 files)
 ├── output/         # Generated visualizations (PNG) and data exports (CSV)
 ├── .env            # Census API key (git-ignored)
 ├── .gitignore
@@ -21,8 +21,10 @@ Temp_agencies/
 ## Code Files
 
 **National analyses:**
-- `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Recession shading on the plot. Also has sex/age/education breakdown code, but education is unavailable (see Known Issues) — use `temp_agencies_demographics.py` for demographics.
-- `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Dual-panel plots showing absolute levels and share percentage.
+- `temp_agencies_over_time_national.py`: National temp agency employment timeline (all 50 states + DC aggregated). Class-based (`QWITempAgencyAnalyzer`). NAICS 561320. Plots the seasonally-adjusted level (via `qwi_seasonal.seasonally_adjust`); recession shading. Also has sex/age/education breakdown code, but education is unavailable (see Known Issues) — use `temp_agencies_demographics.py` for demographics.
+- `temp_agency_share_NAICS56.py`: Temp agency (561320) employment as share of NAICS 56 (Administrative and Support Services). Class-based (`SectorShareAnalyzer`). Single-panel plot of seasonally-adjusted absolute levels (temp vs. sector), recession-shaded; the share-percentage table stays on the raw ratio.
+- `qwi_seasonal.py`: Shared helper, `seasonally_adjust(df, value_col)`. QWI has no official seasonally-adjusted series — confirmed against both the API (`seasonadj` returns data only for `U`) and the raw bulk release files (same result). Adds `{value_col}_sa` and `{value_col}_seasonal` via classical multiplicative decomposition (`statsmodels.tsa.seasonal.seasonal_decompose`, period=4). Imported by the scripts below that plot employment levels over time.
+- `temp_national_seasonality.py`: The one chart that shows the *raw* national series plus the seasonal pattern being removed (national employment: raw vs. SA overlay; average seasonal deviation by quarter). Reads `output/national_temp_employment.csv` — no API calls.
 - `temp_agency_wages.py`: Compares average earnings (EarnS, EarnHirAS) in temp agencies (561320) against NAICS 56 and total private sector. Class-based (`WageAnalyzer`). Employment-weighted national aggregation. 3-panel wage trends plot and wage gap visualization. Outputs quarterly and annual CSVs.
 - `temp_agency_turnover.py`: Job stability and churn vs. NAICS 56 and total private, 2005-2023. Class-based (`TurnoverAnalyzer`). Pulls QWI counts (Emp, EmpEnd, EmpS, HirA, HirN, Sep, HirAs, SepS), sums to national, derives rates: stable_share (EmpS/Emp), accession/separation/churn rates, stable_hire_share (HirAs/HirA). 3-panel trends + comparison bar. Uses `time=from YYYY to YYYY` batching (one call per state).
 - `temp_penetration_by_state.py`: Temp help (561320) as a share of total private (00) employment by state. Class-based (`PenetrationAnalyzer`). Tile-grid (`GRID`) choropleth in pure matplotlib (no geo deps) + ranked bar. Compares LATEST_YEAR (2023) with COMPARE_YEAR (2010); `LATEST_FALLBACK` walks back year by year to LATEST_YEAR's last available year per state (MI: 2021, AK: 2016) rather than assuming a fixed cutoff.
@@ -30,8 +32,8 @@ Temp_agencies/
 - `temp_agencies_demographics.py`: National demographic breakdowns for one quarter (default 2023 Q1). Class-based (`TempAgencyDemographics`). Sex and age come from the `qwi/sa` dataset; race and ethnicity from `qwi/rh` (they are not on `sa`). Sums per-category employment across states. Education is not attempted — it lives only on `qwi/se` for the 25+ restriction and is fully suppressed for NAICS 561320.
 
 **State-level analyses (California):**
-- `temp_agencies_over_time.py`: Basic quarterly timeline of temp help services (NAICS 561320) for a single state (default CA), 2005-2024. Plots with one x-axis label per year.
-- `employment_services_over_time.py`: Compares 4 NAICS codes within employment services (561311, 561320, 561312, 561330) for California.
+- `temp_agencies_over_time.py`: Basic quarterly timeline of temp help services (NAICS 561320) for a single state (default CA), 2005-2024. Seasonally adjusted (`qwi_seasonal`). Plots with one x-axis label per year.
+- `employment_services_over_time.py`: Compares 4 NAICS codes within employment services (561311, 561320, 561312, 561330) for California. Each series seasonally adjusted independently before plotting.
 
 **Demographic snapshots:**
 - `temp_agencies_race_sex.py`: Sex and age distribution snapshot (despite filename, does not analyze race). Single state (CA), single quarter (default 2022 Q1).
@@ -49,6 +51,8 @@ Temp_agencies/
 
 **Required API parameters:** `ownercode=A05, sex=0, agegrp=A00, education=E0, firmage=0, firmsize=0` (totals). Demographic breakdowns override the relevant parameter with category-specific codes.
 
+**Seasonal adjustment:** QWI has no seasonally-adjusted product (the `seasonadj` API field and the same field in the raw bulk files at lehd.ces.census.gov/data/qwi/ both return data only for `U`, Unadjusted). Employment-level time-series charts use a self-computed approximation instead — see `qwi_seasonal.py` and `temp_national_seasonality.py`. Ratio measures (sector share, turnover rates) stay on raw values.
+
 ## Setup and Configuration
 
 **Python:** Anaconda at `C:\Users\Sandler\anaconda3\python.exe` (Python 3.11.7, conda 24.5.0). Not on PATH — invoke with full path or activate the conda environment first.
@@ -57,7 +61,7 @@ Temp_agencies/
 
 **Output path:** Scripts save directly into the repo's `output/` directory via `OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")`, so it resolves correctly no matter what directory you run from. (Formerly hardcoded to `M:/Temp_agencies`, a scratch folder outside the repo — that path is no longer used.)
 
-**Dependencies:** requests, pandas, matplotlib, seaborn
+**Dependencies:** requests, pandas, matplotlib, seaborn, statsmodels (seasonal adjustment)
 
 ## Running Scripts
 
@@ -71,6 +75,7 @@ python temp_agency_turnover.py               # Turnover / job stability (~150 AP
 python temp_penetration_by_state.py          # State penetration map (~200 API calls, fast)
 python temp_agencies_demographics.py         # Sex/age/race/ethnicity (~900 API calls)
 python temp_agency_occupations.py            # OEWS occupational mix (offline; reads a committed CSV)
+python temp_national_seasonality.py          # Seasonality chart (offline; reads national_temp_employment.csv)
 python employment_services_over_time.py      # CA industry comparison
 python temp_agencies_over_time.py            # CA single-industry timeline
 python temp_agencies_race_sex.py             # CA demographic snapshot

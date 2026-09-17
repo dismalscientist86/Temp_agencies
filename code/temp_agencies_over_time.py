@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import time
 import os
 
+from qwi_seasonal import seasonally_adjust
+
 def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2024):
     url = "https://api.census.gov/data/timeseries/qwi/sa"
     all_rows = []
@@ -64,13 +66,18 @@ df_final = get_qwi_piece_by_piece(API_KEY)
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 if df_final is not None:
+    # QWI has no seasonally-adjusted series (see qwi_seasonal.py); approximate
+    # one ourselves so the plot isn't dominated by the Q4 hiring spike.
+    df_final = seasonally_adjust(df_final, 'Emp')
+
     plt.figure(figsize=(12, 5))
     periods = list(df_final['period'])
-    plt.plot(range(len(periods)), df_final['Emp'], marker='o', color='darkblue', linewidth=2)
-    plt.title('NAICS 561320 (Temporary Help Services): Employment Over Time - California (Quarterly)')
+    plt.plot(range(len(periods)), df_final['Emp_sa'], marker='o', color='darkblue', linewidth=2)
+    plt.title('NAICS 561320 (Temporary Help Services): Employment Over Time - '
+              'California (Quarterly, seasonally adjusted)')
     ticks = range(0, len(periods), 4)  # one label per year
     plt.xticks(ticks, [periods[i] for i in ticks], rotation=45, ha='right')
-    plt.ylabel('Total Employees')
+    plt.ylabel('Total Employees (seasonally adjusted)')
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
     plt.savefig(f"{OUTPUT_DIR}/temp_agencies_over_time.png", dpi=300, bbox_inches='tight')

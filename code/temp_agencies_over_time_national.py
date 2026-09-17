@@ -14,6 +14,8 @@ plt.rcParams['figure.figsize'] = (12, 6)
 # Save outputs straight into the repo's output/ folder (this file lives in code/)
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
+from qwi_seasonal import seasonally_adjust
+
 class QWITempAgencyAnalyzer:
     """Analyzer for temp agency employment using Census QWI data"""
     
@@ -416,21 +418,25 @@ def main():
     )
     
     if national_timeline is not None and len(national_timeline) > 0:
-        # Save timeline data
+        # QWI has no seasonally-adjusted series (see qwi_seasonal.py); approximate
+        # one ourselves so the headline chart isn't dominated by the Q4 hiring spike.
+        national_timeline = seasonally_adjust(national_timeline, 'Emp')
+
+        # Save timeline data (raw + seasonally adjusted)
         output_file = f'{OUTPUT_DIR}/national_temp_employment.csv'
         national_timeline.to_csv(output_file, index=False)
         print(f"\n[OK] Saved timeline to {output_file}")
         print(f"\nTimeline summary:")
         print(national_timeline.describe())
-        
-        # Plot timeline
+
+        # Plot timeline (seasonally adjusted; see national_seasonality.png for the raw series)
         fig, ax = plt.subplots(figsize=(14, 6))
-        ax.plot(range(len(national_timeline)), national_timeline['Emp'],
+        ax.plot(range(len(national_timeline)), national_timeline['Emp_sa'],
                 marker='o', color='darkblue', linewidth=2, markersize=4)
-        ax.set_title(f'National Temp Agency Employment (NAICS {analyzer.temp_naics})',
+        ax.set_title(f'National Temp Agency Employment (NAICS {analyzer.temp_naics}, seasonally adjusted)',
                      fontsize=14, fontweight='bold')
         ax.set_xlabel('Quarter', fontsize=12)
-        ax.set_ylabel('Total Employees', fontsize=12)
+        ax.set_ylabel('Total Employees (seasonally adjusted)', fontsize=12)
 
         # Shade NBER recession periods (quarter ranges that fall within the series)
         recessions = [

@@ -14,6 +14,8 @@ plt.rcParams['figure.figsize'] = (14, 7)
 # Save outputs straight into the repo's output/ folder (this file lives in code/)
 OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
+from qwi_seasonal import seasonally_adjust
+
 class SectorShareAnalyzer:
     """Analyze temp agency share within NAICS 56 sector using Census QWI data"""
     
@@ -261,10 +263,10 @@ class SectorShareAnalyzer:
 
         x = range(len(df))
 
-        ax1.plot(x, df['temp_employment']/1000,
+        ax1.plot(x, df['temp_employment_sa']/1000,
                 marker='o', linewidth=2, markersize=4,
                 label='Temp Agencies (561320)', color='darkblue')
-        ax1.plot(x, df['sector_employment']/1000,
+        ax1.plot(x, df['sector_employment_sa']/1000,
                 marker='s', linewidth=2, markersize=4,
                 label='Total Sector (56)', color='darkgreen', alpha=0.7)
 
@@ -284,10 +286,10 @@ class SectorShareAnalyzer:
                        label='NBER recession' if not labelled else None)
             labelled = True
 
-        ax1.set_title('Employment in NAICS 56 Sector - National: Temp Agencies vs. Total Sector',
-                     fontsize=14, fontweight='bold')
+        ax1.set_title('Employment in NAICS 56 Sector - National: Temp Agencies vs. Total Sector '
+                     '(seasonally adjusted)', fontsize=14, fontweight='bold')
         ax1.set_xlabel('Quarter', fontsize=12)
-        ax1.set_ylabel('Employment (Thousands)', fontsize=12)
+        ax1.set_ylabel('Employment (Thousands, seasonally adjusted)', fontsize=12)
         ax1.legend(loc='best', fontsize=11)
         ax1.grid(True, alpha=0.3)
 
@@ -346,7 +348,12 @@ def main():
     if share_df is None:
         print("\n[FAILED] Failed to retrieve data")
         return
-    
+
+    # QWI has no seasonally-adjusted series (see qwi_seasonal.py); approximate
+    # one ourselves so the plot isn't dominated by the Q4 hiring spike.
+    share_df = seasonally_adjust(share_df, 'temp_employment')
+    share_df = seasonally_adjust(share_df, 'sector_employment')
+
     # Save detailed quarterly data
     output_csv = f'{OUTPUT_DIR}/temp_agency_sector_share.csv'
     share_df.to_csv(output_csv, index=False)
