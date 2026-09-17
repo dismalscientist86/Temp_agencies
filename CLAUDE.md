@@ -55,7 +55,7 @@ Temp_agencies/
 
 **Census API key:** All scripts read from the `CENSUS_API_KEY` environment variable via `os.environ.get("CENSUS_API_KEY", "")`. The key is stored in `.env` at the repo root (git-ignored). To obtain a key: https://api.census.gov/data/key_signup.html. To load the `.env` before running, either `set` the variable in your shell or use a tool like `python-dotenv`.
 
-**Output path:** Scripts save to `M:/Temp_agencies` (hardcoded). The `output/` directory in the repo contains previously generated results.
+**Output path:** Scripts save directly into the repo's `output/` directory via `OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")`, so it resolves correctly no matter what directory you run from. (Formerly hardcoded to `M:/Temp_agencies`, a scratch folder outside the repo — that path is no longer used.)
 
 **Dependencies:** requests, pandas, matplotlib, seaborn
 

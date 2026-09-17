@@ -14,7 +14,7 @@ newer May-year is published.
 
 Blank employment / wage cells are BLS non-disclosure (footnotes 8 / 4).
 
-Outputs (to M:/Temp_agencies):
+Outputs (to output/):
     oews_561320_major_groups.csv   major SOC groups: employment, share, wages
     oews_occupation_mix.png        occupational mix bar chart
     oews_occupation_pay.png        employment share vs. annual mean wage
@@ -30,7 +30,7 @@ sns.set_style("whitegrid")
 
 REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_CSV = os.path.join(REPO, "output", "oews_561320_may2025.csv")
-OUTPUT_DIR = "M:/Temp_agencies"
+OUTPUT_DIR = os.path.join(REPO, "output")
 PERIOD = "May 2025"
 
 

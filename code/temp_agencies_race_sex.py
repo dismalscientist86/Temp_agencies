@@ -58,7 +58,8 @@ MY_KEY = os.environ.get("CENSUS_API_KEY", "")
 print("Fetching demographic data from Census QWI API...")
 df_sex, df_age = get_demographic_snapshot(MY_KEY)
 
-OUTPUT_DIR = "M:/Temp_agencies"
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 if df_sex is not None and df_age is not None:
     # Mapping Labels

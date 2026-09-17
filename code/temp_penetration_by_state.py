@@ -8,7 +8,7 @@ year in one call and averaged across the four quarters.
 Produces a tile-grid ("statebins") choropleth and a ranked bar chart for the
 latest year, plus a CSV that also carries an earlier year for comparison.
 
-Outputs (to M:/Temp_agencies):
+Outputs (to output/):
     temp_penetration_by_state.csv     state, both years, penetration, rank, change
     temp_penetration_map.png          tile-grid map, latest year
     temp_penetration_ranking.png      ranked horizontal bar, latest year
@@ -26,7 +26,8 @@ import os
 
 sns.set_style("white")
 
-OUTPUT_DIR = "M:/Temp_agencies"
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 COMPARE_YEAR = 2010
 LATEST_YEAR = 2023

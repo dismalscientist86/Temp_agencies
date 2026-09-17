@@ -60,7 +60,8 @@ def get_qwi_piece_by_piece(api_key, state_code="06", start_year=2005, end_year=2
 API_KEY = os.environ.get("CENSUS_API_KEY", "")
 df_final = get_qwi_piece_by_piece(API_KEY)
 
-OUTPUT_DIR = "M:/Temp_agencies"
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 if df_final is not None:
     plt.figure(figsize=(12, 5))

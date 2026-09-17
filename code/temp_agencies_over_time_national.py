@@ -11,6 +11,9 @@ import os
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
 
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+
 class QWITempAgencyAnalyzer:
     """Analyzer for temp agency employment using Census QWI data"""
     
@@ -414,7 +417,7 @@ def main():
     
     if national_timeline is not None and len(national_timeline) > 0:
         # Save timeline data
-        output_file = 'M:/Temp_agencies/national_temp_employment.csv'
+        output_file = f'{OUTPUT_DIR}/national_temp_employment.csv'
         national_timeline.to_csv(output_file, index=False)
         print(f"\n[OK] Saved timeline to {output_file}")
         print(f"\nTimeline summary:")
@@ -456,7 +459,7 @@ def main():
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
         
-        plot_file = 'M:/Temp_agencies/national_timeline.png'
+        plot_file = f'{OUTPUT_DIR}/national_timeline.png'
         plt.savefig(plot_file, dpi=300, bbox_inches='tight')
         print(f"[OK] Saved plot to {plot_file}")
         plt.close()

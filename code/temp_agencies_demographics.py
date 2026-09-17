@@ -13,7 +13,7 @@ Education (E1-E5) is published only on the `se` dataset and only for the
 25+ age restriction; for NAICS 561320 every state-level cell is suppressed,
 so an education breakdown is not obtainable and is not attempted here.
 
-Outputs (to M:/Temp_agencies), one set per demographic:
+Outputs (to output/), one set per demographic:
     temp_employment_by_{demo}_{YEAR}_Q{QUARTER}.csv
     temp_employment_by_{demo}_{YEAR}_Q{QUARTER}.png
 """
@@ -29,7 +29,8 @@ import os
 sns.set_style("whitegrid")
 plt.rcParams["figure.figsize"] = (12, 6)
 
-OUTPUT_DIR = "M:/Temp_agencies"
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 
 class TempAgencyDemographics:

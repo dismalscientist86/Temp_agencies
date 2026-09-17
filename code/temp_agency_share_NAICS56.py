@@ -11,6 +11,9 @@ import os
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (14, 7)
 
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+
 class SectorShareAnalyzer:
     """Analyze temp agency share within NAICS 56 sector using Census QWI data"""
     
@@ -251,7 +254,7 @@ class SectorShareAnalyzer:
         
         return merged_df
     
-    def plot_sector_share(self, df: pd.DataFrame, output_file: str = 'M:/Temp_agencies/sector_share_plot.png'):
+    def plot_sector_share(self, df: pd.DataFrame, output_file: str = f'{OUTPUT_DIR}/sector_share_plot.png'):
         """Create visualization of temp agency share over time"""
         
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
@@ -353,7 +356,7 @@ def main():
         return
     
     # Save detailed quarterly data
-    output_csv = 'M:/Temp_agencies/temp_agency_sector_share.csv'
+    output_csv = f'{OUTPUT_DIR}/temp_agency_sector_share.csv'
     share_df.to_csv(output_csv, index=False)
     print(f"\n[OK] Saved detailed data to {output_csv}")
     
@@ -365,7 +368,7 @@ def main():
     annual_summary = analyzer.create_summary_statistics(share_df)
     print("\n" + annual_summary.to_string(index=False))
     
-    annual_csv = 'M:/Temp_agencies/temp_agency_sector_share_annual.csv'
+    annual_csv = f'{OUTPUT_DIR}/temp_agency_sector_share_annual.csv'
     annual_summary.to_csv(annual_csv, index=False)
     print(f"\n[OK] Saved annual summary to {annual_csv}")
     

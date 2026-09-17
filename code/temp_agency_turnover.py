@@ -17,7 +17,7 @@ Rate definitions (per quarter):
     churn_rate        = (HirA + Sep) / (Emp + EmpEnd)
     stable_hire_share = HirAs / HirA
 
-Outputs (to M:/Temp_agencies):
+Outputs (to output/):
     temp_agency_turnover.csv          quarterly, long format
     temp_agency_turnover_annual.csv   annual means by industry
     turnover_trends.png              3-panel time series, 2005-2023
@@ -34,7 +34,8 @@ import os
 
 sns.set_style("whitegrid")
 
-OUTPUT_DIR = "M:/Temp_agencies"
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
 
 
 class TurnoverAnalyzer:

@@ -11,6 +11,9 @@ import os
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (14, 7)
 
+# Save outputs straight into the repo's output/ folder (this file lives in code/)
+OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "output")
+
 
 class WageAnalyzer:
     """Compare average earnings in temp agencies against broader sectors using Census QWI data"""
@@ -312,7 +315,7 @@ class WageAnalyzer:
 
         return merged
 
-    def plot_wage_trends(self, df: pd.DataFrame, output_file: str = 'M:/Temp_agencies/wage_trends.png'):
+    def plot_wage_trends(self, df: pd.DataFrame, output_file: str = f'{OUTPUT_DIR}/wage_trends.png'):
         """Create 3-panel plot: absolute earnings, wage ratio, new hire earnings"""
 
         fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(14, 14))
@@ -378,7 +381,7 @@ class WageAnalyzer:
         print(f"\n[OK] Saved wage trends plot to {output_file}")
         plt.close()
 
-    def plot_wage_gap(self, df: pd.DataFrame, output_file: str = 'M:/Temp_agencies/wage_gap.png'):
+    def plot_wage_gap(self, df: pd.DataFrame, output_file: str = f'{OUTPUT_DIR}/wage_gap.png'):
         """Single panel: temp earnings as % of sector/private earnings over time"""
 
         fig, ax = plt.subplots(figsize=(14, 7))
@@ -485,7 +488,7 @@ def main():
         return
 
     # Save quarterly data
-    output_csv = 'M:/Temp_agencies/temp_agency_wages.csv'
+    output_csv = f'{OUTPUT_DIR}/temp_agency_wages.csv'
     csv_cols = [
         'year', 'quarter', 'period', 'temp_emp',
         'EarnS_temp', 'EarnS_sector', 'private_earnS',
@@ -505,7 +508,7 @@ def main():
     annual_summary = analyzer.create_summary_statistics(wage_df)
     print("\n" + annual_summary.to_string(index=False))
 
-    annual_csv = 'M:/Temp_agencies/temp_agency_wages_annual.csv'
+    annual_csv = f'{OUTPUT_DIR}/temp_agency_wages_annual.csv'
     annual_summary.to_csv(annual_csv, index=False)
     print(f"\n[OK] Saved annual summary to {annual_csv}")
 

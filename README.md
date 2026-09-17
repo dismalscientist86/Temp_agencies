@@ -83,8 +83,10 @@ export $(grep -v '^#' .env | xargs)   # bash
 
 Get a key at https://api.census.gov/data/key_signup.html.
 
-**Output path:** scripts write to the hardcoded location `M:/Temp_agencies`.
-Copy results into this repo's `output/` folder to version them.
+**Output path:** every script writes straight into this repo's `output/`
+folder (resolved via `__file__`, so it works regardless of the working
+directory you run the script from). Results land already version-controlled
+— just `git add`/commit them.
 
 ## Running
 
