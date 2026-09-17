@@ -126,6 +126,48 @@ class TempAgencyDemographics:
         df["percentage"] = (df["employment"] / df["employment"].sum() * 100).round(2)
         return df
 
+    def plot_sex(self, df: pd.DataFrame, year: int, quarter: int):
+        """Single divided bar, not two separate bars -- the split is close to
+        50/50, so a bar-per-category chart makes two nearly-identical bars
+        that carry no visual information. A divided bar against a 50% line
+        shows the (small) deviation from parity directly."""
+        d = df.set_index("category")
+        male, female = d.loc["Male", "percentage"], d.loc["Female", "percentage"]
+
+        fig, ax = plt.subplots(figsize=(9, 2.6))
+        ax.barh([0], [male], color="#2c5c8a", edgecolor="white", linewidth=1, height=0.55)
+        ax.barh([0], [female], left=[male], color="#e07a3f", edgecolor="white",
+                linewidth=1, height=0.55)
+
+        ax.axvline(50, color="dimgray", linestyle="--", linewidth=1, zorder=3)
+        ax.text(50, 0.42, "50%", ha="center", fontsize=8, color="dimgray")
+
+        ax.text(male / 2, 0, f"Male\n{male:.1f}%", ha="center", va="center",
+                fontsize=12, fontweight="bold", color="white")
+        ax.text(male + female / 2, 0, f"Female\n{female:.1f}%", ha="center", va="center",
+                fontsize=12, fontweight="bold", color="white")
+
+        ax.set_xlim(0, 100)
+        ax.set_ylim(-0.6, 0.6)
+        ax.set_yticks([])
+        ax.set_xlabel("Share of temp-help workforce (%)")
+        ax.set_title(f"Temp help services (NAICS 561320) workers by sex - "
+                     f"national ({year} Q{quarter})", fontsize=13, fontweight="bold")
+        for spine in ("top", "right", "left"):
+            ax.spines[spine].set_visible(False)
+        ax.grid(axis="x", alpha=0.3)
+
+        n_lo, n_hi = int(df["states_with_data"].min()), int(df["states_with_data"].max())
+        note = (f"Sum of {n_lo} reporting states; suppressed cells excluded." if n_lo == n_hi
+                else f"Sum of {n_lo}-{n_hi} reporting states; suppressed cells excluded.")
+        ax.text(1.0, -0.42, note, transform=ax.transAxes, ha="right", fontsize=8, color="gray")
+
+        plt.tight_layout()
+        fname = f"{OUTPUT_DIR}/temp_employment_by_sex_{year}_Q{quarter}.png"
+        plt.savefig(fname, dpi=300, bbox_inches="tight")
+        print(f"  [OK] {fname}")
+        plt.close()
+
     def plot(self, df: pd.DataFrame, demographic: str, year: int, quarter: int):
         titles = {"sex": "Sex", "agegrp": "Age group",
                   "race": "Race", "ethnicity": "Ethnicity"}
@@ -172,7 +214,10 @@ def main():
         csv = f"{OUTPUT_DIR}/temp_employment_by_{demo}_{YEAR}_Q{QUARTER}.csv"
         df.to_csv(csv, index=False)
         print(f"  [OK] {csv}")
-        analyzer.plot(df, demo, YEAR, QUARTER)
+        if demo == "sex":
+            analyzer.plot_sex(df, YEAR, QUARTER)
+        else:
+            analyzer.plot(df, demo, YEAR, QUARTER)
         results[demo] = df
 
     print("\n" + "=" * 70)
