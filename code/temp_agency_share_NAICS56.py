@@ -255,56 +255,48 @@ class SectorShareAnalyzer:
         return merged_df
     
     def plot_sector_share(self, df: pd.DataFrame, output_file: str = f'{OUTPUT_DIR}/sector_share_plot.png'):
-        """Create visualization of temp agency share over time"""
-        
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
-        
-        # Plot 1: Absolute employment levels
+        """Create visualization of temp agency share over time (absolute employment levels)"""
+
+        fig, ax1 = plt.subplots(figsize=(14, 7))
+
         x = range(len(df))
-        
-        ax1.plot(x, df['temp_employment']/1000, 
-                marker='o', linewidth=2, markersize=4, 
+
+        ax1.plot(x, df['temp_employment']/1000,
+                marker='o', linewidth=2, markersize=4,
                 label='Temp Agencies (561320)', color='darkblue')
-        ax1.plot(x, df['sector_employment']/1000, 
+        ax1.plot(x, df['sector_employment']/1000,
                 marker='s', linewidth=2, markersize=4,
                 label='Total Sector (56)', color='darkgreen', alpha=0.7)
-        
-        ax1.set_title('Employment in NAICS 56 Sector - National: Temp Agencies vs. Total Sector', 
+
+        # Shade NBER recession periods (quarter ranges that fall within the series)
+        recessions = [
+            ('2007 Q4', '2009 Q2'),   # Great Recession (Dec 2007 - Jun 2009)
+            ('2020 Q1', '2020 Q2'),   # COVID-19 recession (Feb 2020 - Apr 2020)
+        ]
+        periods = list(df['period'])
+        labelled = False
+        for start, end in recessions:
+            if start not in periods and end not in periods:
+                continue
+            x0 = periods.index(start) if start in periods else 0
+            x1 = periods.index(end) if end in periods else len(periods) - 1
+            ax1.axvspan(x0, x1, color='gray', alpha=0.18, linewidth=0, zorder=0,
+                       label='NBER recession' if not labelled else None)
+            labelled = True
+
+        ax1.set_title('Employment in NAICS 56 Sector - National: Temp Agencies vs. Total Sector',
                      fontsize=14, fontweight='bold')
         ax1.set_xlabel('Quarter', fontsize=12)
         ax1.set_ylabel('Employment (Thousands)', fontsize=12)
         ax1.legend(loc='best', fontsize=11)
         ax1.grid(True, alpha=0.3)
-        
+
         # Set x-axis labels (every 4 quarters = 1 year)
         tick_positions = range(0, len(df), 4)
         tick_labels = [df.iloc[i]['period'] for i in tick_positions if i < len(df)]
         ax1.set_xticks(tick_positions)
         ax1.set_xticklabels(tick_labels, rotation=45, ha='right')
-        
-        # Plot 2: Share percentage
-        ax2.plot(x, df['share_pct'], 
-                marker='o', linewidth=2.5, markersize=5, 
-                color='darkred')
-        ax2.fill_between(x, df['share_pct'], alpha=0.3, color='darkred')
-        
-        ax2.set_title('Temp Agency Share of NAICS 56 Sector Employment - National', 
-                     fontsize=14, fontweight='bold')
-        ax2.set_xlabel('Quarter', fontsize=12)
-        ax2.set_ylabel('Share (%)', fontsize=12)
-        ax2.grid(True, alpha=0.3)
-        
-        # Set x-axis labels
-        ax2.set_xticks(tick_positions)
-        ax2.set_xticklabels(tick_labels, rotation=45, ha='right')
-        
-        # Add horizontal line at mean
-        mean_share = df['share_pct'].mean()
-        ax2.axhline(y=mean_share, color='gray', linestyle='--', 
-                   linewidth=1.5, alpha=0.7,
-                   label=f'Mean: {mean_share:.1f}%')
-        ax2.legend(loc='best', fontsize=11)
-        
+
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches='tight')
         print(f"\n[OK] Saved plot to {output_file}")
