@@ -195,7 +195,7 @@
         Alabama        & 3.0 \\
         Georgia        & 2.8 \\
         \midrule
-        \multicolumn{2}{@{}l}{\textbf{Lowest}} \\
+        \multicolumn{2}{@{}l}{\textbf{Lowest, 2023}} \\
         \midrule
         South Dakota & 0.7 \\
         Hawaii       & 0.9 \\
@@ -206,13 +206,15 @@
     \begin{column}{0.52\textwidth}
       \begin{itemize}
         \item Temp help is \textbf{2.2\%} of private employment nationally, but
-              ranges roughly \textbf{5-fold} across states --- 0.7\% to 3.3\%.
+              ranges roughly \textbf{5-fold} across 2023 states --- 0.7\% to 3.3\%.
         \item The high-penetration cluster is the Southeast and lower Midwest
               (TN, SC, AL, GA, NC, KY, IN, OH) --- auto, appliance, food-processing
               and warehousing supply chains that staff heavily through agencies.
         \item Penetration rose in \textbf{most states} from 2010 to 2023
               (e.g. MS $+0.7$, NE $+1.0$ pp).
-        \item MI left QWI after 2021; AK has no QWI data.
+        \item MI (shown at 2021) and AK (2016) have since stopped reporting to
+              QWI; AK's 2016 penetration, \textbf{0.5\%}, was already the
+              lowest in the country.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -486,8 +488,9 @@
     \item Education is published only on the QWI \texttt{se} dataset for the
           25+ restriction, and every state-level cell for NAICS 561320 is
           suppressed --- so no education breakdown is possible.
-    \item \textbf{Michigan} left QWI after 2021 and \textbf{Alaska} does not
-          report, so the state map uses MI's 2021 figure and omits AK.
+    \item \textbf{Michigan} left QWI after 2021 and \textbf{Alaska} after 2016;
+          the state map falls back to each state's last available year and
+          tags the tile accordingly.
     \item OEWS is a separate survey (establishment-reported, annual) and is not
           in the BLS API --- the 561320 table was taken from the OEWS query
           system. Its "annual wage" assumes full-year work.

@@ -31,8 +31,9 @@ OUTPUT_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file
 
 COMPARE_YEAR = 2010
 LATEST_YEAR = 2023
-# Michigan and Alaska stopped reporting to QWI after 2021; fall back a few years.
-LATEST_FALLBACK = [2023, 2022, 2021]
+# A few states stop reporting to QWI at different points (Michigan after 2021;
+# Alaska after 2016) -- fall back year by year until a state has data.
+LATEST_FALLBACK = list(range(LATEST_YEAR, COMPARE_YEAR - 1, -1))
 
 # FIPS -> (USPS abbreviation, full name)
 STATES = {
@@ -198,9 +199,10 @@ class PenetrationAnalyzer:
 
         med = vals.median()
         ax.text(0, -0.1,
-                f"Range {vmin:.1f}%-{vmax:.1f}%, median {med:.1f}%. "
-                f"Grey = no QWI data (AK). A year tag (e.g. '21) marks a state "
-                f"whose latest available year is not {LATEST_YEAR} (MI left QWI after 2021).",
+                f"Range {vmin:.1f}%-{vmax:.1f}%, median {med:.1f}%. Grey = no QWI "
+                f"data in {COMPARE_YEAR}-{LATEST_YEAR}. A year tag (e.g. '16) marks "
+                f"a state whose latest available year is not {LATEST_YEAR} "
+                f"(MI left QWI after 2021; AK after 2016).",
                 fontsize=9, color="dimgray")
 
         plt.tight_layout()
@@ -210,12 +212,15 @@ class PenetrationAnalyzer:
 
     @staticmethod
     def plot_ranking(df, output_file=f"{OUTPUT_DIR}/temp_penetration_ranking.png"):
-        d = df.dropna(subset=["penetration_latest"]).sort_values("penetration_latest")
+        d = df.dropna(subset=["penetration_latest"]).sort_values("penetration_latest").copy()
+        stale = d["year_used"] != LATEST_YEAR
+        labels = [f"{s} *" if st else s for s, st in zip(d["state"], stale)]
+
         fig, ax = plt.subplots(figsize=(9, 12))
         national = d["temp_emp_latest"].sum() / d["total_emp_latest"].sum() * 100
         bar_colors = ["darkblue" if v >= national else "#8fb3d9"
                       for v in d["penetration_latest"]]
-        ax.barh(d["state"], d["penetration_latest"], color=bar_colors)
+        ax.barh(labels, d["penetration_latest"], color=bar_colors)
         ax.axvline(national, color="darkred", linestyle="--", linewidth=1.5)
         ax.text(national, len(d) - 0.2, f"  U.S. {national:.1f}%", color="darkred",
                 fontsize=9, va="top")
@@ -223,6 +228,11 @@ class PenetrationAnalyzer:
         ax.set_title(f"Temp penetration by state, {LATEST_YEAR}", fontsize=14, fontweight="bold")
         ax.margins(y=0.01)
         ax.grid(True, axis="x", alpha=0.3)
+        if stale.any():
+            tagged = ", ".join(f"{s} ({int(y)})" for s, y, st in
+                               zip(d["state"], d["year_used"], stale) if st)
+            ax.text(0, -0.045, f"* latest available year, not {LATEST_YEAR}: {tagged}",
+                    transform=ax.transAxes, fontsize=8, color="gray")
         plt.tight_layout()
         plt.savefig(output_file, dpi=300, bbox_inches="tight")
         print(f"[OK] Saved {output_file}")
